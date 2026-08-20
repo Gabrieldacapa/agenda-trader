@@ -1,0 +1,2645 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda Trader</title>
+<style>
+:root{
+  --bg:#0b1220;--panel:#111827;--panel2:#172033;--line:#263247;
+  --text:#f8fafc;--muted:#94a3b8;--blue:#38bdf8;--blue2:#0ea5e9;
+  --green:#22c55e;--amber:#f59e0b;--red:#ef4444;--violet:#8b5cf6;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(180deg,#08111f,#0b1220 30%,#0f172a);color:var(--text)}
+header{padding:20px 16px;text-align:center;background:rgba(10,18,32,.95);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+header h1{margin:0;font-size:24px;letter-spacing:.4px}
+header small{color:var(--muted)}
+nav{display:flex;gap:8px;justify-content:center;padding:10px;background:#0f172a;border-bottom:1px solid var(--line);position:sticky;top:81px;z-index:19;overflow-x:auto}
+nav button{background:#1e293b;color:white;border:1px solid #334155;padding:10px 15px;border-radius:10px;font-weight:700;white-space:nowrap}
+nav button:hover{background:#273449}
+.container{max-width:1050px;margin:auto;padding:18px}
+section{display:none}
+section.ativa{display:block}
+.card{background:linear-gradient(180deg,#151f31,#111827);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:13px;box-shadow:0 12px 30px rgba(0,0,0,.18)}
+.card h3{margin:0 0 8px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+label{display:block;font-size:13px;font-weight:800;color:#cbd5e1;margin-bottom:5px}
+input,textarea,select{width:100%;border:1px solid #344258;background:#0b1323;color:white;border-radius:10px;padding:11px 12px;margin-bottom:12px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--blue)}
+textarea{min-height:90px;resize:vertical}
+button{border:0;border-radius:10px;padding:10px 14px;cursor:pointer}
+.btn-main{background:linear-gradient(90deg,#22c55e,#16a34a);color:#052e16;font-weight:900}
+.btn-blue{background:linear-gradient(90deg,#38bdf8,#0ea5e9);color:#082f49;font-weight:900}
+.btn-edit{background:#f59e0b;color:#281800;font-weight:800}
+.btn-del{background:#ef4444;color:white;font-weight:800}
+.btn-gray{background:#334155;color:white}
+.acoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.badge{display:inline-flex;align-items:center;background:linear-gradient(90deg,#2563eb,#4f46e5);color:#fff;padding:7px 12px;border-radius:999px;margin:4px 5px 0 0;font-size:14px;font-weight:900;letter-spacing:.25px;text-transform:uppercase}
+.info{color:#cbd5e1;font-size:14px;line-height:1.55}
+.vazio{text-align:center;color:var(--muted);padding:28px}
+.jogo-resumo{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;cursor:pointer}
+.jogo-datahora{min-width:112px}
+.hora{font-size:24px;font-weight:950;color:#f8fafc;line-height:1}
+.data{font-size:14px;font-weight:900;color:var(--blue);margin-top:5px}
+.jogo-confronto{font-size:18px;font-weight:900}
+.jogo-seta{font-size:18px;color:var(--muted);transition:.2s}
+.jogo-detalhes{display:none;margin-top:15px;padding-top:15px;border-top:1px solid var(--line)}
+.card.aberto .jogo-detalhes{display:block}
+.card.aberto .jogo-seta{transform:rotate(180deg)}
+.box{padding:12px;border-radius:12px;margin-top:10px}
+.estudo{background:#11261b;border-left:4px solid var(--green);white-space:pre-wrap}
+.observar{background:#102248;border-left:4px solid var(--blue);white-space:pre-wrap}
+.alerta{background:#3a2a0b;border-left:4px solid var(--amber);white-space:pre-wrap}
+.stats{background:#17162b;border-left:4px solid var(--violet)}
+.check-item{display:flex;gap:9px;align-items:flex-start;margin:8px 0}
+.check-item input{width:auto;margin:2px 0 0}
+.subtitulo{margin:22px 0 10px;font-size:16px;color:#dbeafe}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pills button{background:#1e293b;color:#dbeafe;border:1px solid #334155}
+.nota{font-size:12px;color:var(--muted);margin-top:-4px;margin-bottom:12px}
+.alert-status{font-size:12px;font-weight:800;color:#fde68a}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+@media(max-width:760px){
+  .container{padding:10px}
+  nav{justify-content:flex-start;top:78px}
+  .grid,.grid3{grid-template-columns:1fr}
+  .jogo-resumo{grid-template-columns:1fr auto}
+  .jogo-datahora{grid-column:1/2;display:flex;gap:10px;align-items:baseline}
+  .jogo-confronto{grid-column:1/2}
+  .jogo-seta{grid-column:2;grid-row:1/3}
+}
+
+body.tema-claro{
+  --bg:#f1f5f9;--panel:#ffffff;--panel2:#f8fafc;--line:#cbd5e1;
+  --text:#0f172a;--muted:#64748b;--blue:#0284c7;--blue2:#0ea5e9;
+  background:#eef2f7;color:#0f172a;
+}
+body.tema-claro header{background:#ffffff;color:#0f172a}
+body.tema-claro nav{background:#e2e8f0}
+body.tema-claro nav button{background:#ffffff;color:#0f172a;border-color:#cbd5e1}
+body.tema-claro .card{background:#ffffff;color:#0f172a;border-color:#cbd5e1}
+body.tema-claro input,
+body.tema-claro textarea,
+body.tema-claro select{background:#ffffff;color:#0f172a;border-color:#cbd5e1}
+body.tema-claro .info{color:#475569}
+.resultados5{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
+.resultado-slot{display:flex;flex-direction:column;gap:5px}
+.resultado-slot select{margin:0;font-weight:900;text-align:center}
+.resultado-chip{display:inline-flex;align-items:center;gap:7px;font-weight:900;padding:7px 10px;border-radius:999px;margin:3px 5px 3px 0}
+.res-v{background:#14351f;color:#86efac}
+.res-e{background:#3a310e;color:#fde68a}
+.res-d{background:#3a1515;color:#fca5a5}
+body.tema-claro .res-v{background:#dcfce7;color:#166534}
+body.tema-claro .res-e{background:#fef3c7;color:#92400e}
+body.tema-claro .res-d{background:#fee2e2;color:#991b1b}
+.check-extra-ok{background:#14351f;border-left:4px solid #22c55e;padding:10px;border-radius:10px;margin-top:8px;color:#bbf7d0}
+body.tema-claro .check-extra-ok{background:#dcfce7;color:#166534}
+.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.resultados5,.config-grid{grid-template-columns:1fr}}
+
+.bloco-estatistica{
+  background:#0d1728;
+  border:1px solid #334155;
+  border-radius:15px;
+  padding:15px;
+  margin:18px 0;
+}
+.bloco-estatistica h4{
+  margin:0 0 6px;
+  padding-bottom:9px;
+  border-bottom:1px solid #334155;
+  color:#7dd3fc;
+  font-size:17px;
+}
+body.tema-claro .bloco-estatistica{
+  background:#f8fafc;
+  border-color:#cbd5e1;
+}
+body.tema-claro .bloco-estatistica h4{
+  color:#0369a1;
+  border-color:#cbd5e1;
+}
+
+.grupo-titulo{
+  margin:30px 0 14px;
+  padding:14px 16px;
+  border-radius:14px;
+  font-size:20px;
+  font-weight:950;
+  letter-spacing:.3px;
+  background:linear-gradient(90deg,#1d4ed8,#4338ca);
+  color:white;
+  box-shadow:0 8px 22px rgba(0,0,0,.22);
+}
+.grupo-titulo.casa-fora{
+  background:linear-gradient(90deg,#047857,#059669);
+}
+.grupo-titulo.h2h{
+  background:linear-gradient(90deg,#b45309,#d97706);
+}
+body.tema-claro .grupo-titulo{color:white}
+
+.titulo-bloco-dados{
+  display:block;
+  margin:-15px -15px 14px;
+  padding:12px 15px;
+  border-radius:15px 15px 0 0;
+  background:#1e293b;
+  color:#f8fafc;
+  font-size:17px;
+  font-weight:950;
+  letter-spacing:.2px;
+  border-bottom:2px solid #38bdf8;
+}
+body.tema-claro .titulo-bloco-dados{
+  background:#e2e8f0;
+  color:#0f172a;
+  border-bottom-color:#0284c7;
+}
+
+.titulo-geral-mandante{background:linear-gradient(90deg,#1d4ed8,#2563eb)!important;border-bottom-color:#60a5fa!important}
+.titulo-geral-visitante{background:linear-gradient(90deg,#6d28d9,#7c3aed)!important;border-bottom-color:#a78bfa!important}
+.titulo-casa-mandante{background:linear-gradient(90deg,#047857,#059669)!important;border-bottom-color:#34d399!important}
+.titulo-fora-visitante{background:linear-gradient(90deg,#0f766e,#0d9488)!important;border-bottom-color:#2dd4bf!important}
+.titulo-h2h-geral{background:linear-gradient(90deg,#b45309,#d97706)!important;border-bottom-color:#fbbf24!important}
+.titulo-h2h-casa{background:linear-gradient(90deg,#be123c,#e11d48)!important;border-bottom-color:#fb7185!important}
+body.tema-claro .titulo-geral-mandante,
+body.tema-claro .titulo-geral-visitante,
+body.tema-claro .titulo-casa-mandante,
+body.tema-claro .titulo-fora-visitante,
+body.tema-claro .titulo-h2h-geral,
+body.tema-claro .titulo-h2h-casa{color:#fff!important}
+
+.filtros-agenda{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin:12px 0 18px}
+.prioridade{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:900;margin-top:6px}
+.prio-alta{background:#3b0f16;color:#fecaca}
+.prio-observar{background:#172554;color:#bfdbfe}
+.prio-live{background:#3a2a0b;color:#fde68a}
+.prio-descartado{background:#27272a;color:#d4d4d8}
+.progresso-wrap{margin-top:10px}
+.progresso-barra{height:8px;background:#1f2937;border-radius:999px;overflow:hidden;border:1px solid #334155}
+.progresso-fill{height:100%;background:linear-gradient(90deg,#22c55e,#84cc16)}
+.progresso-txt{font-size:12px;color:#cbd5e1;margin-top:5px}
+.ponto-principal{background:#0f2a33;border-left:4px solid #22d3ee;padding:10px;border-radius:10px;margin-top:10px}
+body.tema-claro .prio-alta{background:#fee2e2;color:#991b1b}
+body.tema-claro .prio-observar{background:#dbeafe;color:#1e3a8a}
+body.tema-claro .prio-live{background:#fef3c7;color:#92400e}
+body.tema-claro .prio-descartado{background:#e5e7eb;color:#374151}
+body.tema-claro .progresso-barra{background:#e2e8f0;border-color:#cbd5e1}
+body.tema-claro .progresso-txt{color:#475569}
+body.tema-claro .ponto-principal{background:#ecfeff;color:#155e75}
+@media(max-width:760px){.filtros-agenda{grid-template-columns:1fr}}
+
+body.tema-claro{background:#f4f7fb!important;color:#0f172a!important}
+body.tema-claro header{background:#ffffff!important;color:#0f172a!important;border-color:#cbd5e1!important}
+body.tema-claro nav{background:#e8eef6!important;border-color:#cbd5e1!important}
+body.tema-claro nav button{background:#ffffff!important;color:#0f172a!important;border:1px solid #cbd5e1!important}
+body.tema-claro nav button:hover{background:#f1f5f9!important}
+body.tema-claro .card{background:#ffffff!important;color:#0f172a!important;border-color:#cbd5e1!important}
+body.tema-claro h1,
+body.tema-claro h2,
+body.tema-claro h3,
+body.tema-claro h4,
+body.tema-claro strong{color:#0f172a}
+body.tema-claro label{color:#334155!important}
+body.tema-claro .info,
+body.tema-claro .nota,
+body.tema-claro .progresso-txt{color:#475569!important}
+body.tema-claro input,
+body.tema-claro textarea,
+body.tema-claro select{
+  background:#ffffff!important;
+  color:#0f172a!important;
+  border-color:#94a3b8!important
+}
+body.tema-claro input::placeholder,
+body.tema-claro textarea::placeholder{color:#64748b!important}
+body.tema-claro .btn-gray{background:#475569!important;color:#ffffff!important}
+body.tema-claro .btn-edit{background:#f59e0b!important;color:#1f1300!important}
+body.tema-claro .btn-del{background:#dc2626!important;color:#ffffff!important}
+body.tema-claro .btn-main{color:#052e16!important}
+body.tema-claro .btn-blue{color:#082f49!important}
+body.tema-claro .badge{color:#ffffff!important}
+body.tema-claro .alert-status{color:#92400e!important}
+body.tema-claro .estudo{background:#ecfdf5!important;color:#14532d!important}
+body.tema-claro .observar{background:#eff6ff!important;color:#1e3a8a!important}
+body.tema-claro .alerta{background:#fffbeb!important;color:#78350f!important}
+body.tema-claro .stats{background:#f5f3ff!important;color:#3b0764!important}
+body.tema-claro .jogo-confronto,
+body.tema-claro .hora{color:#0f172a!important}
+body.tema-claro .data{color:#0369a1!important}
+body.tema-claro .jogo-seta{color:#64748b!important}
+body.tema-claro .jogo-detalhes{border-color:#cbd5e1!important}
+
+.modal-fundo{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.72);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+.modal-fundo.aberto{display:flex}
+.modal-caixa{
+  width:min(460px,100%);
+  background:#111827;
+  color:#f8fafc;
+  border:1px solid #475569;
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,.45);
+}
+.modal-caixa h3{margin-top:0}
+.modal-acoes{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+body.tema-claro .modal-caixa{
+  background:#fff;
+  color:#0f172a;
+  border-color:#cbd5e1;
+}
+.backup-texto{
+  width:100%;
+  min-height:150px;
+  font-family:monospace;
+  font-size:12px;
+}
+
+.titulo-h2h-geral-destaque{
+  background:linear-gradient(90deg,#b45309,#f59e0b)!important;
+  color:#ffffff!important;
+  border-bottom:2px solid #fcd34d!important;
+}
+.titulo-h2h-mandante-destaque{
+  background:linear-gradient(90deg,#be123c,#e11d48)!important;
+  color:#ffffff!important;
+  border-bottom:2px solid #fb7185!important;
+}
+body.tema-claro .titulo-h2h-geral-destaque,
+body.tema-claro .titulo-h2h-mandante-destaque{
+  color:#ffffff!important;
+}
+
+.titulo-salvo-h2h-geral{
+  display:inline-block;
+  color:#f59e0b !important;
+  font-size:17px;
+  font-weight:950;
+  margin:8px 0 12px;
+}
+.titulo-salvo-h2h-casa{
+  display:inline-block;
+  color:#fb7185 !important;
+  font-size:17px;
+  font-weight:950;
+  margin:8px 0 12px;
+}
+body.tema-claro .titulo-salvo-h2h-geral{
+  color:#b45309 !important;
+}
+body.tema-claro .titulo-salvo-h2h-casa{
+  color:#be123c !important;
+}
+
+.estatistica-personalizada-linha{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr auto;
+  gap:10px;
+  align-items:end;
+  margin-bottom:10px;
+  padding:12px;
+  border:1px solid #334155;
+  border-radius:12px;
+  background:#0d1728;
+}
+body.tema-claro .estatistica-personalizada-linha{
+  background:#f8fafc;
+  border-color:#cbd5e1;
+}
+.estatistica-personalizada-card{
+  padding:10px 12px;
+  margin-top:8px;
+  border-left:4px solid #22d3ee;
+  background:#0f2a33;
+  border-radius:10px;
+}
+body.tema-claro .estatistica-personalizada-card{
+  background:#ecfeff;
+  color:#164e63;
+}
+@media(max-width:760px){
+  .estatistica-personalizada-linha{grid-template-columns:1fr}
+}
+
+.resumo-inteligente{
+  margin-top:16px;
+  padding:16px;
+  border-radius:14px;
+  background:linear-gradient(180deg,#0f1d2e,#101827);
+  border:1px solid #334155;
+  border-left:5px solid #38bdf8;
+}
+.resumo-inteligente h3{
+  margin:0 0 12px;
+  color:#7dd3fc;
+}
+.resumo-grade{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-bottom:12px;
+}
+.resumo-item{
+  background:#0b1323;
+  border:1px solid #273449;
+  border-radius:10px;
+  padding:10px;
+}
+.resumo-item strong{
+  display:block;
+  color:#cbd5e1;
+  margin-bottom:4px;
+}
+.resumo-texto{
+  background:#0b1323;
+  border:1px solid #273449;
+  border-radius:10px;
+  padding:12px;
+  line-height:1.6;
+}
+body.tema-claro .resumo-inteligente{
+  background:#f0f9ff;
+  border-color:#bae6fd;
+  border-left-color:#0284c7;
+}
+body.tema-claro .resumo-inteligente h3{
+  color:#0369a1;
+}
+body.tema-claro .resumo-item,
+body.tema-claro .resumo-texto{
+  background:#ffffff;
+  color:#0f172a;
+  border-color:#cbd5e1;
+}
+body.tema-claro .resumo-item strong{
+  color:#334155;
+}
+@media(max-width:760px){
+  .resumo-grade{grid-template-columns:1fr}
+}
+
+.auth-tela{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:linear-gradient(160deg,#07101d,#0f172a 55%,#111827);
+}
+.auth-card{
+  width:min(440px,100%);
+  background:#111827;
+  border:1px solid #334155;
+  border-radius:20px;
+  padding:24px;
+  box-shadow:0 24px 70px rgba(0,0,0,.38);
+}
+.auth-card h1{margin:0 0 6px;text-align:center}
+.auth-card .auth-sub{text-align:center;color:#94a3b8;margin-bottom:22px}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
+.auth-tabs button{background:#1e293b;color:#fff;border:1px solid #334155;font-weight:800}
+.auth-tabs button.ativo{background:#0ea5e9;color:#082f49}
+.auth-senha-wrap{position:relative}
+.auth-senha-wrap input{padding-right:52px}
+.auth-mostrar{
+  position:absolute;right:8px;top:28px;
+  background:#334155;color:#fff;padding:7px 9px;border-radius:8px;font-size:12px
+}
+.auth-linha{display:flex;align-items:center;gap:8px;margin:4px 0 14px}
+.auth-linha input{width:auto;margin:0}
+.auth-status{min-height:20px;margin-top:12px;font-size:13px;color:#fbbf24;text-align:center}
+.auth-link{background:none!important;color:#7dd3fc!important;padding:5px 0!important;text-decoration:underline}
+.conta-barra{
+  display:flex;justify-content:flex-end;align-items:center;gap:10px;
+  max-width:1050px;margin:0 auto;padding:8px 18px 0;color:#94a3b8;font-size:12px
+}
+.conta-barra button{padding:6px 10px}
+body.tema-claro .auth-tela{background:#eef2f7}
+body.tema-claro .auth-card{background:#fff;color:#0f172a;border-color:#cbd5e1}
+body.tema-claro .auth-card .auth-sub{color:#64748b}
+body.tema-claro .auth-tabs button{background:#e2e8f0;color:#0f172a;border-color:#cbd5e1}
+</style>
+
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Agenda Trader">
+<link rel="apple-touch-icon" href="./icon-192.png">
+
+</head>
+<body>
+
+<div id="authTela" class="auth-tela">
+  <div class="auth-card">
+    <h1>📋 Agenda Trader</h1>
+    <div class="auth-sub">Entre na sua conta para acessar seus dados online.</div>
+
+    <div class="auth-tabs">
+      <button id="tabEntrar" class="ativo" type="button" onclick="mostrarAuthModo('entrar')">Entrar</button>
+      <button id="tabCriar" type="button" onclick="mostrarAuthModo('criar')">Criar conta</button>
+    </div>
+
+    <div id="authNomeBox" style="display:none">
+      <label>Seu nome</label>
+      <input id="authNome" placeholder="Seu nome">
+    </div>
+
+    <label>E-mail</label>
+    <input id="authEmail" type="email" autocomplete="email" placeholder="seuemail@exemplo.com">
+
+    <div class="auth-senha-wrap">
+      <label>Senha</label>
+      <input id="authSenha" type="password" autocomplete="current-password" placeholder="Sua senha">
+      <button class="auth-mostrar" type="button" onclick="alternarSenha('authSenha',this)">Mostrar</button>
+    </div>
+
+    <div id="authConfirmarBox" class="auth-senha-wrap" style="display:none">
+      <label>Confirmar senha</label>
+      <input id="authConfirmarSenha" type="password" autocomplete="new-password" placeholder="Repita sua senha">
+      <button class="auth-mostrar" type="button" onclick="alternarSenha('authConfirmarSenha',this)">Mostrar</button>
+    </div>
+
+    <div class="auth-linha">
+      <input id="authManter" type="checkbox" checked>
+      <label for="authManter" style="margin:0">Manter conectado</label>
+    </div>
+
+    <button id="authBotaoPrincipal" class="btn-main" type="button" style="width:100%" onclick="executarAuthPrincipal()">Entrar</button>
+
+    <div style="text-align:center;margin-top:10px">
+      <button class="auth-link" type="button" onclick="recuperarSenha()">Esqueci minha senha</button>
+    </div>
+
+    <div id="authStatus" class="auth-status"></div>
+  </div>
+</div>
+
+<noscript><div style="padding:20px;background:#7f1d1d;color:white;font-family:Arial">Este app precisa de JavaScript habilitado.</div></noscript>
+<div id="appPrincipal" style="display:none">
+<header>
+  <h1>📋 <span id="tituloNome">Agenda Trader</span></h1>
+  <small id="subtituloNome">Seu guia diário de estudos e operações</small>
+</header>
+
+<nav>
+  <button onclick="abrirTela('agenda')">Hoje</button>
+  <button onclick="abrirTela('novoJogo')">Adicionar Jogo</button>
+  <button onclick="abrirTela('estrategias')">Estratégias</button>
+  <button onclick="abrirTela('historico')">Histórico</button>
+  <button onclick="abrirTela('configuracoes')">Configurações</button>
+</nav>
+<div class="conta-barra">
+  <span id="contaEmail"></span>
+  <span id="cloudStatus">☁️ conectando...</span>
+  <button class="btn-gray" type="button" onclick="sairConta()">Sair</button>
+</div>
+
+<div class="container">
+
+<section id="agenda" class="ativa">
+  <h2>Agenda</h2>
+  <div class="pills">
+    <button onclick="mudarDias(0)">Hoje</button>
+    <button onclick="mudarDias(1)">Amanhã</button>
+    <button onclick="mudarDias(2)">+2 dias</button>
+    <button onclick="mudarDias(3)">+3 dias</button>
+  </div>
+
+  <div class="filtros-agenda">
+    <input id="buscaAgenda" placeholder="Buscar por time ou campeonato..." oninput="renderAgenda()">
+    <select id="filtroEstrategiaAgenda" onchange="renderAgenda()">
+      <option value="">Todas as estratégias</option>
+    </select>
+    <select id="filtroPrioridadeAgenda" onchange="renderAgenda()">
+      <option value="">Todas as prioridades</option>
+      <option value="alta">🔥 Prioridade alta</option>
+      <option value="observar">👀 Observar</option>
+      <option value="live">⚠️ Só se confirmar ao vivo</option>
+      <option value="descartado">❌ Descartado</option>
+    </select>
+  </div>
+
+  <div id="tituloAgenda"></div>
+  <div id="listaAgenda"></div>
+</section>
+
+<section id="novoJogo">
+  <h2>Adicionar / Editar Jogo</h2>
+  <input type="hidden" id="jogoId">
+
+  <div class="card">
+    <h3>Partida</h3>
+    <div class="grid">
+      <div><label>Mandante</label><input id="mandante" placeholder="Ex: Flamengo" oninput="atualizarH2HNomes()"></div>
+      <div><label>Visitante</label><input id="visitante" placeholder="Ex: Cruzeiro" oninput="atualizarH2HNomes()"></div>
+    </div>
+    <div class="grid3">
+      <div><label>Campeonato</label><input id="campeonato" placeholder="Ex: Brasileirão"></div>
+      <div><label>Data</label><input type="date" id="data"></div>
+      <div><label>Horário</label><input type="time" id="horario"></div>
+    </div>
+    <div class="grid">
+      <div>
+        <label>Prioridade do jogo</label>
+        <select id="prioridade">
+          <option value="observar">👀 Observar</option>
+          <option value="alta">🔥 Prioridade alta</option>
+          <option value="live">⚠️ Só se confirmar ao vivo</option>
+          <option value="descartado">❌ Descartado</option>
+        </select>
+      </div>
+      <div>
+        <label>Ponto principal</label>
+        <input id="pontoPrincipal" placeholder="Ex: mandante forte + visitante sofre no HT">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Estratégias</h3>
+    <div id="selecaoEstrategias"></div>
+    <h4 class="subtitulo">Checklist da estratégia</h4>
+    <div id="checklistJogo"></div>
+  </div>
+
+  <div class="card">
+    <h3>Checklist rápido do jogo</h3>
+    <div id="checklistRapido"></div>
+    <label>Outros pontos</label>
+    <input id="checkExtra" placeholder="Ex: gramado ruim, viagem longa, clássico...">
+  </div>
+
+  <div class="card">
+    <h3>Estatísticas opcionais — últimos 5 jogos</h3>
+    <div class="nota">Todas as médias abaixo devem ser preenchidas usando os últimos 5 jogos de cada equipe.</div>
+
+    <div class="grid3">
+      <div><label>Média de cartões — mandante (últimos 5)</label><input type="number" step="0.01" id="cartoesCasa"></div>
+      <div><label>Média de cartões — visitante (últimos 5)</label><input type="number" step="0.01" id="cartoesFora"></div>
+      <div><label>Média de cartões aplicados pelo árbitro (últimos 5)</label><input type="number" step="0.01" id="cartoesJuiz"></div>
+
+      <div><label>Média de gols feitos — mandante (últimos 5)</label><input type="number" step="0.01" id="golsFeitosCasa"></div>
+      <div><label>Média de gols sofridos — mandante (últimos 5)</label><input type="number" step="0.01" id="golsSofridosCasa"></div>
+      <div><label>Média de gols HT feitos — mandante (últimos 5)</label><input type="number" step="0.01" id="golsHtCasa"></div>
+
+      <div><label>Média de gols HT sofridos — mandante (últimos 5)</label><input type="number" step="0.01" id="golsHtSofridosCasa"></div>
+      <div><label>Média de gols no 2º tempo — mandante (últimos 5)</label><input type="number" step="0.01" id="gols2tCasa"></div>
+      <div><label>Média de escanteios — mandante (últimos 5)</label><input type="number" step="0.01" id="escanteiosCasa"></div>
+
+      <div><label>Média de gols feitos — visitante (últimos 5)</label><input type="number" step="0.01" id="golsFeitosFora"></div>
+      <div><label>Média de gols sofridos — visitante (últimos 5)</label><input type="number" step="0.01" id="golsSofridosFora"></div>
+      <div><label>Média de gols HT feitos — visitante (últimos 5)</label><input type="number" step="0.01" id="golsHtFora"></div>
+
+      <div><label>Média de gols HT sofridos — visitante (últimos 5)</label><input type="number" step="0.01" id="golsHtSofridosFora"></div>
+      <div><label>Média de gols no 2º tempo — visitante (últimos 5)</label><input type="number" step="0.01" id="gols2tFora"></div>
+      <div><label>Média de escanteios — visitante (últimos 5)</label><input type="number" step="0.01" id="escanteiosFora"></div>
+
+      <div><label>Média de faltas — mandante (últimos 5)</label><input type="number" step="0.01" id="faltasCasa"></div>
+      <div><label>Média de faltas — visitante (últimos 5)</label><input type="number" step="0.01" id="faltasFora"></div>
+    </div>
+
+    <div class="grupo-titulo">📊 ÚLTIMOS 5 JOGOS — GERAL</div>
+
+    <div class="bloco-estatistica">
+      <div class="titulo-bloco-dados titulo-geral-mandante">📌 Mandante — últimos 5 jogos gerais</div>
+      <div class="nota">Opcional: últimos 5 jogos do time, independentemente de ter jogado em casa ou fora.</div>
+      <div id="ultimosGeralCasaSlots"></div>
+    </div>
+
+    <div class="bloco-estatistica">
+      <div class="titulo-bloco-dados titulo-geral-visitante">📌 Visitante — últimos 5 jogos gerais</div>
+      <div class="nota">Opcional: últimos 5 jogos do time, independentemente de ter jogado em casa ou fora.</div>
+      <div id="ultimosGeralForaSlots"></div>
+    </div>
+
+    <div class="grupo-titulo casa-fora">🏠 ÚLTIMOS 5 JOGOS — CASA / FORA</div>
+
+    <div class="bloco-estatistica">
+      <div class="titulo-bloco-dados titulo-casa-mandante">🏠 Últimos 5 jogos do mandante como mandante</div>
+      <div class="nota">Opcional: escolha o resultado e, se quiser, informe adversário e placar.</div>
+      <div id="ultimosCasaSlots"></div>
+    </div>
+
+    <div class="bloco-estatistica">
+      <div class="titulo-bloco-dados titulo-fora-visitante">✈️ Últimos 5 jogos do visitante como visitante</div>
+      <div class="nota">Opcional: escolha o resultado e, se quiser, informe adversário e placar.</div>
+      <div id="ultimosForaSlots"></div>
+    </div>
+
+    <div class="grupo-titulo h2h">⚔️ CONFRONTOS DIRETOS</div>
+
+    <div class="bloco-estatistica">
+      <div class="titulo-bloco-dados titulo-h2h-geral-destaque">⚔️ Confronto direto — últimos 5 jogos geral</div>
+      <div class="nota">Os nomes dos times são preenchidos automaticamente a partir do mandante e visitante da partida.</div>
+      <div id="h2hGeralSlots"></div>
+    </div>
+
+    <div class="bloco-estatistica">
+      <div class="titulo-bloco-dados titulo-h2h-mandante-destaque">🏟️ Últimos 5 confrontos diretos com o mandante como mandante</div>
+      <div class="nota">Aqui você registra apenas confrontos em que o time mandante desta partida também jogou em casa.</div>
+      <div id="h2hCasaSlots"></div>
+    </div>
+  </div>
+
+
+    <div class="bloco-estatistica">
+      <div class="titulo-bloco-dados" style="background:linear-gradient(90deg,#0891b2,#0e7490);color:#fff;border-bottom:2px solid #67e8f9;">
+        ➕ Estatísticas personalizadas
+      </div>
+      <div class="nota">
+        Crie dados extras para este jogo. Ex.: Finalizações no alvo | últimos 5 jogos | 4,8.
+      </div>
+
+      <div id="estatisticasPersonalizadasLista"></div>
+
+      <button class="btn-blue" type="button" onclick="adicionarEstatisticaPersonalizada()">
+        + Adicionar estatística
+      </button>
+    </div>
+
+  <div class="card">
+    <h3>Seu estudo</h3>
+    <label>Anotações</label>
+    <textarea id="anotacoes" placeholder="Tudo que encontrou durante seu estudo..."></textarea>
+    <label>O que observar ao vivo</label>
+    <textarea id="observar" placeholder="Ex: pressão, intensidade, finalizações, posse perigosa..."></textarea>
+    <label>Alerta pessoal</label>
+    <textarea id="alerta" placeholder="Ex: não entrar se houver posse estéril..."></textarea>
+  </div>
+
+  <div class="card">
+    <h3>Alerta antes do jogo</h3>
+    <div class="grid">
+      <div>
+        <label>Ativar alerta</label>
+        <select id="alertaAtivo">
+          <option value="nao">Não</option>
+          <option value="sim">Sim</option>
+        </select>
+      </div>
+      <div>
+        <label>Antecedência</label>
+        <select id="alertaMinutos">
+          <option value="5">5 minutos antes</option>
+          <option value="10">10 minutos antes</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-blue" type="button" onclick="pedirNotificacao()">Permitir notificações</button>
+    <div class="nota">O aviso sonoro funciona enquanto esta página estiver aberta. Notificações em segundo plano podem ser limitadas pelo navegador, especialmente no celular.</div>
+  </div>
+
+  <div class="acoes">
+    <button class="btn-main" type="button" onclick="salvarJogo()">Salvar Jogo</button>
+    <button class="btn-gray" type="button" onclick="limparFormularioJogo()">Limpar</button>
+    <button id="btnExcluirJogoEdicao" class="btn-del" type="button" onclick="pedirExcluirJogoEdicao();return false;" style="display:none">Excluir este jogo</button>
+  </div>
+</section>
+
+<section id="estrategias">
+  <h2>Estratégias</h2>
+  <div class="card">
+    <input type="hidden" id="estrategiaId">
+    <label>Nome da estratégia</label>
+    <input id="nomeEstrategia" placeholder="Ex: Lay 0-0">
+    <label>Descrição / regras</label>
+    <textarea id="descricaoEstrategia" placeholder="Explique quando essa estratégia deve ser utilizada..."></textarea>
+    <label>Checklist</label>
+    <textarea id="checklistEstrategia" placeholder="Digite um critério por linha."></textarea>
+    <div class="acoes">
+      <button class="btn-main" type="button" onclick="salvarEstrategia()">Salvar Estratégia</button>
+      <button class="btn-gray" type="button" onclick="limparFormularioEstrategia()">Limpar</button>
+      <button id="btnExcluirEstrategiaEdicao" class="btn-del" type="button" onclick="pedirExcluirEstrategiaEdicao();return false;" style="display:none">Excluir esta estratégia</button>
+    </div>
+  </div>
+  <div id="listaEstrategias"></div>
+</section>
+
+<section id="historico">
+  <h2>Histórico de Jogos</h2>
+  <input id="buscaHistorico" placeholder="Pesquisar por time, campeonato ou estratégia..." oninput="renderHistorico()">
+  <div id="listaHistorico"></div>
+</section>
+
+<section id="configuracoes">
+  <h2>Configurações</h2>
+
+
+  <div class="card">
+    <h3>Aplicativo</h3>
+    <p class="info">Instale a Agenda Trader no celular ou no computador para abrir como um aplicativo.</p>
+    <div class="acoes">
+      <button id="btnInstalarApp" class="btn-blue" type="button" onclick="instalarPWA()" style="display:none">📲 Instalar aplicativo</button>
+      <button class="btn-gray" type="button" onclick="pedirNotificacao()">🔔 Permitir notificações</button>
+    </div>
+    <div id="pwaStatus" class="nota" style="margin-top:10px">Preparando instalação...</div>
+  </div>
+
+  <div class="card">
+    <h3>Aparência</h3>
+    <label>Tema</label>
+    <select id="temaConfig" onchange="salvarConfiguracoes()">
+      <option value="escuro">Escuro</option>
+      <option value="claro">Claro</option>
+    </select>
+  </div>
+
+  <div class="card">
+    <h3>Personalização</h3>
+    <div class="config-grid">
+      <div>
+        <label>Nome da agenda</label>
+        <input id="nomeAgendaConfig" placeholder="Ex: Agenda Trader">
+      </div>
+      <div>
+        <label>Seu nome</label>
+        <input id="nomeUsuarioConfig" placeholder="Ex: Gabriel">
+      </div>
+    </div>
+    <button class="btn-main" onclick="salvarConfiguracoes()">Salvar configurações</button>
+  </div>
+
+  <div class="card">
+    <h3>Backup</h3>
+    <p class="info">Baixe um arquivo com jogos, estratégias e configurações. Guarde esse arquivo em local seguro.</p>
+    <div class="acoes">
+      <a id="btnBaixarBackup" class="btn-blue" href="#" download="agenda-trader-backup.json"
+   onclick="return prepararBackupLink(this)"
+   style="display:inline-flex;align-items:center;text-decoration:none;">
+   ⬇️ Baixar backup
+</a>
+      <label class="btn-gray" style="display:inline-flex;align-items:center;cursor:pointer">
+        ⬆️ Restaurar backup
+        <input type="file" id="arquivoBackup" accept=".json,application/json" onchange="restaurarBackup(event);return false;" style="display:none">
+      </label>
+    </div>
+    <div id="statusBackup" class="nota" style="margin-top:10px"></div>
+    <div class="nota" style="margin-top:6px">Se estiver testando dentro da prévia do ChatGPT e o download for bloqueado, abra este HTML diretamente no Chrome.</div>
+    <div id="statusSistema" class="nota" style="margin-top:6px">Sistema carregando...</div>
+  </div>
+
+  <div class="card">
+    <h3>Apagar dados</h3>
+    <p class="info">Escolha exatamente o que deseja excluir. As configurações da agenda são mantidas ao excluir apenas jogos.</p>
+    <div class="acoes">
+      <button id="btnExcluirJogos" class="btn-del" type="button" onclick="pedirExcluirSomenteJogos();return false;">Excluir somente jogos</button>
+      <button id="btnExcluirTudo" class="btn-del" type="button" onclick="pedirExcluirTudo();return false;">Excluir jogos + estratégias</button>
+    </div>
+  </div>
+</section>
+
+</div>
+
+</div>
+<div id="modalConfirmacao" class="modal-fundo">
+  <div class="modal-caixa">
+    <h3 id="modalTitulo">Confirmar</h3>
+    <div id="modalMensagem" class="info"></div>
+    <div class="modal-acoes">
+      <button class="btn-gray" type="button" onclick="fecharModalConfirmacao()">Cancelar</button>
+      <button id="modalConfirmarBtn" class="btn-del" type="button">Confirmar exclusão</button>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://fuqualwvqidugyfdcehd.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_RqkCZuCX_Lu--z5iQ_sFUw_wNv2n7aa';
+const supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
+});
+
+let authModo="entrar";
+let usuarioAtual=null;
+let carregandoNuvem=false;
+let syncTimer=null;
+let storagePatchAtivo=false;
+
+function authMsg(msg,erro=false){
+  const el=document.getElementById("authStatus");
+  if(el){el.textContent=msg||"";el.style.color=erro?"#fca5a5":"#86efac";}
+}
+
+function mostrarAuthModo(modo){
+  authModo=modo;
+  const criar=modo==="criar";
+  document.getElementById("authNomeBox").style.display=criar?"block":"none";
+  document.getElementById("authConfirmarBox").style.display=criar?"block":"none";
+  document.getElementById("authBotaoPrincipal").textContent=criar?"Criar conta":"Entrar";
+  document.getElementById("tabEntrar").classList.toggle("ativo",!criar);
+  document.getElementById("tabCriar").classList.toggle("ativo",criar);
+  document.getElementById("authSenha").autocomplete=criar?"new-password":"current-password";
+  authMsg("");
+}
+
+function alternarSenha(id,btn){
+  const campo=document.getElementById(id);
+  const mostrar=campo.type==="password";
+  campo.type=mostrar?"text":"password";
+  btn.textContent=mostrar?"Ocultar":"Mostrar";
+}
+
+async function executarAuthPrincipal(){
+  const email=(document.getElementById("authEmail").value||"").trim();
+  const senha=document.getElementById("authSenha").value||"";
+  const manter=document.getElementById("authManter").checked;
+
+  if(!email||!senha){authMsg("Preencha e-mail e senha.",true);return;}
+
+  authMsg("Aguarde...");
+
+  try{
+    if(authModo==="criar"){
+      const nome=(document.getElementById("authNome").value||"").trim();
+      const confirmar=document.getElementById("authConfirmarSenha").value||"";
+      if(senha.length<6){authMsg("Use uma senha com pelo menos 6 caracteres.",true);return;}
+      if(senha!==confirmar){authMsg("As senhas não são iguais.",true);return;}
+
+      const {data,error}=await supa.auth.signUp({
+        email,password:senha,
+        options:{data:{name:nome}}
+      });
+      if(error)throw error;
+
+      localStorage.setItem("agendaTraderRemember",manter?"1":"0");
+      if(!manter)sessionStorage.setItem("agendaTraderSessaoAtual","1");
+
+      if(data.session){
+        authMsg("Conta criada.");
+      }else{
+        authMsg("Conta criada. Verifique seu e-mail para confirmar o cadastro.");
+      }
+    }else{
+      const {data,error}=await supa.auth.signInWithPassword({email,password:senha});
+      if(error)throw error;
+      localStorage.setItem("agendaTraderRemember",manter?"1":"0");
+      if(!manter)sessionStorage.setItem("agendaTraderSessaoAtual","1");
+      authMsg("Login realizado.");
+    }
+  }catch(e){
+    authMsg(e.message||"Erro de autenticação.",true);
+  }
+}
+
+async function recuperarSenha(){
+  const email=(document.getElementById("authEmail").value||"").trim();
+  if(!email){authMsg("Digite seu e-mail primeiro.",true);return;}
+  try{
+    authMsg("Enviando e-mail...");
+    const opts={};
+    if(location.protocol==="http:"||location.protocol==="https:")opts.redirectTo=location.href.split("#")[0];
+    const {error}=await supa.auth.resetPasswordForEmail(email,opts);
+    if(error)throw error;
+    authMsg("E-mail de recuperação enviado. Verifique sua caixa de entrada.");
+  }catch(e){
+    authMsg(e.message||"Não foi possível enviar o e-mail.",true);
+  }
+}
+
+async function sairConta(){
+  await supa.auth.signOut();
+  localStorage.removeItem("agendaTraderRemember");
+  sessionStorage.removeItem("agendaTraderSessaoAtual");
+  location.reload();
+}
+
+function mostrarAplicativo(session){
+  usuarioAtual=session?.user||null;
+  document.getElementById("authTela").style.display="none";
+  document.getElementById("appPrincipal").style.display="block";
+  const el=document.getElementById("contaEmail");
+  if(el)el.textContent=usuarioAtual?.email||"";
+}
+
+function mostrarLogin(){
+  usuarioAtual=null;
+  document.getElementById("authTela").style.display="flex";
+  document.getElementById("appPrincipal").style.display="none";
+}
+
+function estadoLocalCompleto(){
+  return {
+    strategies: JSON.parse(localStorage.getItem("agendaTraderEstrategias")||"[]"),
+    games: JSON.parse(localStorage.getItem("agendaTraderJogos")||"[]"),
+    config: JSON.parse(localStorage.getItem("agendaTraderConfig")||"{}")
+  };
+}
+
+async function salvarNuvemAgora(){
+  if(!usuarioAtual||carregandoNuvem)return;
+  clearTimeout(syncTimer);
+  const cloud=document.getElementById("cloudStatus");
+  if(cloud)cloud.textContent="☁️ salvando...";
+  try{
+    const estado=estadoLocalCompleto();
+    const {error}=await supa.from("user_settings").upsert({
+      user_id:usuarioAtual.id,
+      settings:estado
+    },{onConflict:"user_id"});
+    if(error)throw error;
+    if(cloud)cloud.textContent="☁️ salvo online";
+  }catch(e){
+    console.error("Falha na sincronização:",e);
+    if(cloud)cloud.textContent="⚠️ falha ao salvar";
+  }
+}
+
+function agendarSyncNuvem(){
+  if(!usuarioAtual||carregandoNuvem)return;
+  clearTimeout(syncTimer);
+  syncTimer=setTimeout(salvarNuvemAgora,500);
+}
+
+async function carregarNuvem(){
+  if(!usuarioAtual)return;
+  const cloud=document.getElementById("cloudStatus");
+  if(cloud)cloud.textContent="☁️ carregando...";
+  carregandoNuvem=true;
+  try{
+    const {data,error}=await supa.from("user_settings")
+      .select("settings")
+      .eq("user_id",usuarioAtual.id)
+      .maybeSingle();
+    if(error)throw error;
+
+    if(data?.settings){
+      const st=data.settings;
+      localStorage.setItem("agendaTraderEstrategias",JSON.stringify(st.strategies||[]));
+      localStorage.setItem("agendaTraderJogos",JSON.stringify(st.games||[]));
+      localStorage.setItem("agendaTraderConfig",JSON.stringify(st.config||{}));
+    }else{
+      const local=estadoLocalCompleto();
+      const temLocal=(local.strategies?.length||local.games?.length||Object.keys(local.config||{}).length);
+      if(temLocal){
+        await supa.from("user_settings").upsert({
+          user_id:usuarioAtual.id,settings:local
+        },{onConflict:"user_id"});
+      }
+    }
+
+    estrategias=JSON.parse(localStorage.getItem("agendaTraderEstrategias"))||[];
+    jogos=JSON.parse(localStorage.getItem("agendaTraderJogos"))||[];
+    carregarConfiguracoes();
+    atualizarFiltroEstrategiasAgenda();
+    renderAgenda();
+    renderEstrategias();
+    renderHistorico();
+    if(cloud)cloud.textContent="☁️ sincronizado";
+  }catch(e){
+    console.error(e);
+    if(cloud)cloud.textContent="⚠️ erro de sincronização";
+  }finally{
+    carregandoNuvem=false;
+  }
+}
+
+function instalarMonitorLocalStorage(){
+  if(storagePatchAtivo)return;
+  storagePatchAtivo=true;
+  const original=Storage.prototype.setItem;
+  Storage.prototype.setItem=function(key,value){
+    original.call(this,key,value);
+    if(this===localStorage && ["agendaTraderEstrategias","agendaTraderJogos","agendaTraderConfig"].includes(key)){
+      agendarSyncNuvem();
+    }
+  };
+}
+
+async function iniciarAuthOnline(){
+  instalarMonitorLocalStorage();
+
+  const {data:{session}}=await supa.auth.getSession();
+  const remember=localStorage.getItem("agendaTraderRemember");
+  const sessaoAtual=sessionStorage.getItem("agendaTraderSessaoAtual");
+
+  if(session && remember==="0" && !sessaoAtual){
+    await supa.auth.signOut();
+    mostrarLogin();
+    return;
+  }
+
+  if(session){
+    mostrarAplicativo(session);
+    await carregarNuvem();
+  }else{
+    mostrarLogin();
+  }
+
+  supa.auth.onAuthStateChange(async (event,sessionAtual)=>{
+    if(event==="PASSWORD_RECOVERY"){
+      const nova=prompt("Digite sua nova senha:");
+      if(nova&&nova.length>=6){
+        const {error}=await supa.auth.updateUser({password:nova});
+        alert(error?("Erro: "+error.message):"Senha atualizada com sucesso.");
+      }
+      return;
+    }
+
+    if(sessionAtual){
+      mostrarAplicativo(sessionAtual);
+      await carregarNuvem();
+    }else{
+      mostrarLogin();
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded",iniciarAuthOnline);
+
+let eventoInstalacaoPWA=null;
+
+window.addEventListener("beforeinstallprompt",function(e){
+  e.preventDefault();
+  eventoInstalacaoPWA=e;
+  const btn=document.getElementById("btnInstalarApp");
+  const status=document.getElementById("pwaStatus");
+  if(btn)btn.style.display="inline-block";
+  if(status)status.textContent="✅ Aplicativo pronto para instalação.";
+});
+
+window.addEventListener("appinstalled",function(){
+  eventoInstalacaoPWA=null;
+  const btn=document.getElementById("btnInstalarApp");
+  const status=document.getElementById("pwaStatus");
+  if(btn)btn.style.display="none";
+  if(status)status.textContent="✅ Agenda Trader instalada neste dispositivo.";
+});
+
+async function instalarPWA(){
+  const status=document.getElementById("pwaStatus");
+  if(eventoInstalacaoPWA){
+    eventoInstalacaoPWA.prompt();
+    const escolha=await eventoInstalacaoPWA.userChoice;
+    if(status){
+      status.textContent=escolha.outcome==="accepted"
+        ?"✅ Instalação aceita."
+        :"Instalação cancelada.";
+    }
+    eventoInstalacaoPWA=null;
+    return;
+  }
+
+  if(window.matchMedia("(display-mode: standalone)").matches){
+    if(status)status.textContent="✅ O aplicativo já está instalado.";
+    return;
+  }
+
+  if(status){
+    status.textContent="No celular, use o menu do navegador → Adicionar à tela inicial / Instalar app.";
+  }
+}
+
+async function registrarServiceWorker(){
+  const status=document.getElementById("pwaStatus");
+
+  if(!("serviceWorker" in navigator)){
+    if(status)status.textContent="Este navegador não suporta instalação PWA.";
+    return;
+  }
+
+  try{
+    const registro=await navigator.serviceWorker.register("./sw.js");
+    if(status && !window.matchMedia("(display-mode: standalone)").matches){
+      status.textContent="✅ PWA carregada. Use Instalar aplicativo quando o botão aparecer.";
+    }
+    console.log("Service Worker ativo:",registro.scope);
+  }catch(e){
+    console.error("Erro Service Worker:",e);
+    if(status)status.textContent="⚠️ A instalação ficará disponível após a publicação online.";
+  }
+}
+
+document.addEventListener("DOMContentLoaded",registrarServiceWorker);
+
+
+
+let estrategias=JSON.parse(localStorage.getItem("agendaTraderEstrategias"))||[];
+let jogos=JSON.parse(localStorage.getItem("agendaTraderJogos"))||[];
+let diasAgenda=0;
+const checklistPadrao=[
+  "Escalação confirmada",
+  "Verificar desfalques / contusões",
+  "Verificar clima (chuva / sol / vento)",
+  "Jogo difícil",
+  "Jogo fácil",
+  "Jogo amarrado",
+  "Jogo apenas para leitura ao vivo",
+  "Favorito com força máxima",
+  "Motivação / necessidade de resultado",
+  "Descanso / sequência pesada de jogos"
+];
+
+function abrirTela(id){
+  document.querySelectorAll("section").forEach(s=>s.classList.remove("ativa"));
+  document.getElementById(id).classList.add("ativa");
+  if(id==="agenda")renderAgenda();
+  if(id==="estrategias")renderEstrategias();
+  if(id==="novoJogo"){renderSelecaoEstrategias();renderChecklistJogo();renderChecklistRapido()}
+  if(id==="historico")renderHistorico();
+  if(id==="configuracoes")carregarConfiguracoes();
+}
+function salvarDados(){
+  localStorage.setItem("agendaTraderEstrategias",JSON.stringify(estrategias));
+  localStorage.setItem("agendaTraderJogos",JSON.stringify(jogos));
+  if(typeof agendarSyncNuvem==="function")agendarSyncNuvem();
+}
+function uid(){return (crypto&&crypto.randomUUID)?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2)}
+function esc(t){return String(t??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function formatarData(d){if(!d)return"";const p=d.split("-");return `${p[2]}/${p[1]}/${p[0]}`}
+function dataLocalISO(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+
+function salvarEstrategia(){
+  const id=estrategiaId.value,nome=nomeEstrategia.value.trim(),descricao=descricaoEstrategia.value.trim();
+  const checklist=checklistEstrategia.value.split("\n").map(x=>x.trim()).filter(Boolean);
+  if(!nome){alert("Digite o nome da estratégia.");return}
+  if(id){const e=estrategias.find(x=>x.id===id);if(e)Object.assign(e,{nome,descricao,checklist})}
+  else estrategias.push({id:uid(),nome,descricao,checklist});
+  salvarDados();limparFormularioEstrategia();renderEstrategias();renderSelecaoEstrategias();atualizarFiltroEstrategiasAgenda();
+}
+function renderEstrategias(){
+  listaEstrategias.innerHTML=estrategias.length?estrategias.map(e=>`
+  <div class="card">
+    <h3><span class="badge">${esc(e.nome)}</span></h3>
+    <div class="info">${esc(e.descricao||"Sem descrição")}</div>
+    ${e.checklist?.length?`<h4>Checklist</h4>${e.checklist.map(i=>`<div>✓ ${esc(i)}</div>`).join("")}`:""}
+    <div class="acoes">
+      <button class="btn-edit" type="button" onclick="editarEstrategia('${e.id}');return false;">Editar</button>
+      <button class="btn-del" type="button" onclick="pedirExcluirEstrategia('${e.id}');return false;">Excluir</button>
+    </div>
+  </div>`).join(""):'<div class="vazio">Nenhuma estratégia cadastrada.</div>';
+}
+function editarEstrategia(id){
+  const e=estrategias.find(x=>x.id===id);if(!e)return;
+  const btn=document.getElementById("btnExcluirEstrategiaEdicao");
+  if(btn)btn.style.display="inline-block";
+  estrategiaId.value=e.id;nomeEstrategia.value=e.nome;descricaoEstrategia.value=e.descricao||"";checklistEstrategia.value=(e.checklist||[]).join("\n");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function excluirEstrategia(id){
+  const listaEstrategias=JSON.parse(localStorage.getItem("agendaTraderEstrategias")||"[]");
+  const listaJogos=JSON.parse(localStorage.getItem("agendaTraderJogos")||"[]");
+  const estrategia=listaEstrategias.find(x=>x.id===id);
+
+  if(!estrategia){
+    alert("Estratégia não encontrada.");
+    return;
+  }
+
+  const confirmar=window.confirm(
+    'Deseja excluir a estratégia "'+estrategia.nome+'"?\n\n' +
+    'Ela também será removida dos jogos vinculados.'
+  );
+  if(!confirmar)return;
+
+  const novasEstrategias=listaEstrategias.filter(x=>x.id!==id);
+  const novosJogos=listaJogos.map(j=>({
+    ...j,
+    estrategias:(j.estrategias||[]).filter(eid=>eid!==id)
+  }));
+
+  localStorage.setItem("agendaTraderEstrategias",JSON.stringify(novasEstrategias));
+  localStorage.setItem("agendaTraderJogos",JSON.stringify(novosJogos));
+
+  alert("Estratégia excluída com sucesso.");
+  window.location.reload();
+}
+
+function limparFormularioEstrategia(){
+  estrategiaId.value="";nomeEstrategia.value="";descricaoEstrategia.value="";checklistEstrategia.value="";
+  const btn=document.getElementById("btnExcluirEstrategiaEdicao");
+  if(btn)btn.style.display="none";
+}
+
+function renderSelecaoEstrategias(selecionadas=[]){
+  selecaoEstrategias.innerHTML=estrategias.length?estrategias.map(e=>`
+    <div class="check-item">
+      <input type="checkbox" class="estrategiaCheck" value="${e.id}" ${selecionadas.includes(e.id)?"checked":""} onchange="renderChecklistJogo()">
+      <span><strong>${esc(e.nome)}</strong></span>
+    </div>`).join(""):'<div class="info">Cadastre uma estratégia primeiro.</div>';
+}
+function renderChecklistJogo(marcados={}){
+  const ids=[...document.querySelectorAll(".estrategiaCheck:checked")].map(x=>x.value);
+  if(!ids.length){checklistJogo.innerHTML='<div class="info">Selecione uma estratégia para ver o checklist.</div>';return}
+  let out="";
+  ids.forEach(id=>{
+    const e=estrategias.find(x=>x.id===id);if(!e)return;
+    out+=`<div class="card"><span class="badge">${esc(e.nome)}</span>`;
+    (e.checklist||[]).forEach((item,i)=>{
+      const k=id+"_"+i;
+      out+=`<div class="check-item"><input type="checkbox" class="checkCriterio" data-chave="${k}" ${marcados[k]?"checked":""}><span>${esc(item)}</span></div>`;
+    });
+    if(!(e.checklist||[]).length)out+='<div class="info">Sem checklist nesta estratégia.</div>';
+    out+="</div>";
+  });
+  checklistJogo.innerHTML=out;
+}
+function renderChecklistRapido(marcados={}){
+  checklistRapido.innerHTML=checklistPadrao.map((item,i)=>`
+    <div class="check-item"><input type="checkbox" class="checkRapido" data-chave="r${i}" ${marcados["r"+i]?"checked":""}><span>${esc(item)}</span></div>
+  `).join("");
+}
+
+function renderResultados5(prefix,valores=[]){
+  const area=document.getElementById(prefix+"Slots");
+  if(!area)return;
+
+  area.innerHTML=Array.from({length:5},(_,i)=>{
+    const item=valores[i]||{};
+    const resultado=typeof item==="string"?item:(item.resultado||"");
+    const adversario=typeof item==="object"?(item.adversario||""):"";
+    const placar=typeof item==="object"?(item.placar||""):"";
+
+    return `
+      <div class="card" style="padding:12px;margin-bottom:8px;">
+        <strong>Jogo ${i+1}</strong>
+        <div class="grid3" style="margin-top:10px;">
+          <div>
+            <label>Resultado</label>
+            <select id="${prefix}Resultado${i}">
+              <option value="">Não informar</option>
+              <option value="V" ${resultado==="V"?"selected":""}>🏆 Vitória</option>
+              <option value="E" ${resultado==="E"?"selected":""}>➖ Empate</option>
+              <option value="D" ${resultado==="D"?"selected":""}>❌ Derrota</option>
+            </select>
+          </div>
+          <div>
+            <label>Contra quem</label>
+            <input id="${prefix}Adversario${i}" value="${esc(adversario)}" placeholder="Ex: Palmeiras">
+          </div>
+          <div>
+            <label>Placar</label>
+            <input id="${prefix}Placar${i}" value="${esc(placar)}" placeholder="Ex: 2 x 1">
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function pegarResultados5(prefix){
+  return Array.from({length:5},(_,i)=>({
+    resultado:document.getElementById(prefix+"Resultado"+i)?.value||"",
+    adversario:document.getElementById(prefix+"Adversario"+i)?.value.trim()||"",
+    placar:document.getElementById(prefix+"Placar"+i)?.value.trim()||""
+  }));
+}
+
+function resultadosHtml(arr,tipo){
+  if(!Array.isArray(arr))return "";
+
+  const itens=arr.map((item,i)=>{
+    if(typeof item==="string"){
+      item={resultado:item,adversario:"",placar:""};
+    }
+
+    const r=item?.resultado||"";
+    const adversario=item?.adversario||"";
+    const placar=item?.placar||"";
+
+    if(!r&&!adversario&&!placar)return "";
+
+    let chip="";
+    if(r==="V")chip='<span class="resultado-chip res-v">🏆 Vitória</span>';
+    if(r==="E")chip='<span class="resultado-chip res-e">➖ Empate</span>';
+    if(r==="D")chip='<span class="resultado-chip res-d">❌ Derrota</span>';
+
+    return `
+      <div style="margin:7px 0;">
+        <strong>Jogo ${i+1}:</strong>
+        ${chip}
+        ${adversario?` contra ${esc(adversario)}`:""}
+        ${placar?` — ${esc(placar)}`:""}
+      </div>
+    `;
+  }).filter(Boolean).join("");
+
+  return itens;
+}
+
+
+function renderH2H(prefix,valores=[]){
+  const area=document.getElementById(prefix+"Slots");
+  if(!area)return;
+
+  const nomeCasa=(document.getElementById("mandante")?.value||"Mandante").trim()||"Mandante";
+  const nomeFora=(document.getElementById("visitante")?.value||"Visitante").trim()||"Visitante";
+
+  area.innerHTML=Array.from({length:5},(_,i)=>{
+    const item=valores[i]||{};
+    return `
+      <div class="card" style="padding:12px;margin-bottom:8px;">
+        <strong>Confronto ${i+1}</strong>
+        <div class="info" style="margin:7px 0 10px;">
+          ${esc(nomeCasa)} x ${esc(nomeFora)}
+        </div>
+        <div class="grid">
+          <div>
+            <label>Resultado para ${esc(nomeCasa)}</label>
+            <select id="${prefix}Resultado${i}">
+              <option value="">Não informar</option>
+              <option value="V" ${item.resultado==="V"?"selected":""}>🏆 Vitória</option>
+              <option value="E" ${item.resultado==="E"?"selected":""}>➖ Empate</option>
+              <option value="D" ${item.resultado==="D"?"selected":""}>❌ Derrota</option>
+            </select>
+          </div>
+          <div>
+            <label>Placar</label>
+            <input id="${prefix}Placar${i}" value="${esc(item.placar||"")}" placeholder="Ex: 2 x 1">
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function pegarH2H(prefix){
+  return Array.from({length:5},(_,i)=>({
+    resultado:document.getElementById(prefix+"Resultado"+i)?.value||"",
+    placar:document.getElementById(prefix+"Placar"+i)?.value.trim()||""
+  }));
+}
+
+function h2hHtml(arr,titulo,nomeCasa,nomeFora,classeTitulo="",emoji=""){
+  if(!Array.isArray(arr))return "";
+  const itens=arr.map((item,i)=>{
+    if(!item || (!item.resultado && !item.placar)) return "";
+    let chip="";
+    if(item.resultado==="V") chip='<span class="resultado-chip res-v">🏆 Vitória</span>';
+    if(item.resultado==="E") chip='<span class="resultado-chip res-e">➖ Empate</span>';
+    if(item.resultado==="D") chip='<span class="resultado-chip res-d">❌ Derrota</span>';
+    return `<div style="margin:7px 0;"><strong>Jogo ${i+1}:</strong> ${esc(nomeCasa)} x ${esc(nomeFora)} ${chip} ${item.placar?`— ${esc(item.placar)}`:""}</div>`;
+  }).filter(Boolean).join("");
+  return itens?`<div><div class="${classeTitulo}">${emoji} ${titulo}:</div>${itens}</div>`:"";
+}
+
+function atualizarH2HNomes(){
+  renderH2H("h2hGeral",pegarH2H("h2hGeral"));
+  renderH2H("h2hCasa",pegarH2H("h2hCasa"));
+}
+
+
+function adicionarEstatisticaPersonalizada(dados={}){
+  const area=document.getElementById("estatisticasPersonalizadasLista");
+  if(!area)return;
+
+  const id=uid();
+  const linha=document.createElement("div");
+  linha.className="estatistica-personalizada-linha";
+  linha.dataset.customId=id;
+
+  linha.innerHTML=`
+    <div>
+      <label>Nome da estatística</label>
+      <input class="custom-nome" value="${esc(dados.nome||"")}" placeholder="Ex: Finalizações no alvo">
+    </div>
+    <div>
+      <label>Últimos jogos</label>
+      <input class="custom-jogos" type="number" min="1" step="1" value="${esc(dados.jogos||"")}" placeholder="Ex: 5">
+    </div>
+    <div>
+      <label>Valor / número</label>
+      <input class="custom-valor" type="number" step="0.01" value="${esc(dados.valor??"")}" placeholder="Ex: 4.8">
+    </div>
+    <div>
+      <button class="btn-del" type="button" onclick="removerEstatisticaPersonalizada(this)">Remover</button>
+    </div>
+  `;
+
+  area.appendChild(linha);
+}
+
+function removerEstatisticaPersonalizada(botao){
+  const linha=botao.closest(".estatistica-personalizada-linha");
+  if(linha)linha.remove();
+}
+
+function pegarEstatisticasPersonalizadas(){
+  return [...document.querySelectorAll(".estatistica-personalizada-linha")].map(linha=>{
+    const nome=linha.querySelector(".custom-nome")?.value.trim()||"";
+    const jogosRaw=linha.querySelector(".custom-jogos")?.value||"";
+    const valorRaw=linha.querySelector(".custom-valor")?.value||"";
+
+    return {
+      nome,
+      jogos:jogosRaw===""?"":Number(jogosRaw),
+      valor:valorRaw===""?"":Number(valorRaw)
+    };
+  }).filter(item=>item.nome || item.jogos!=="" || item.valor!=="");
+}
+
+function renderEstatisticasPersonalizadasEdicao(lista=[]){
+  const area=document.getElementById("estatisticasPersonalizadasLista");
+  if(!area)return;
+  area.innerHTML="";
+  (Array.isArray(lista)?lista:[]).forEach(item=>adicionarEstatisticaPersonalizada(item));
+}
+
+function customStatsHtml(lista){
+  if(!Array.isArray(lista)||!lista.length)return "";
+  const itens=lista.map(item=>{
+    if(!item || (!item.nome && item.jogos==="" && item.valor===""))return "";
+    const nome=esc(item.nome||"Estatística");
+    const jogos=item.jogos!==""&&item.jogos!=null?`últimos ${esc(item.jogos)} jogos`:"período não informado";
+    const valor=item.valor!==""&&item.valor!=null?esc(item.valor):"—";
+    return `<div class="estatistica-personalizada-card"><strong>➕ ${nome}</strong><br>${jogos} • <strong>${valor}</strong></div>`;
+  }).filter(Boolean).join("");
+  return itens?`<div class="box stats"><strong>📐 Estatísticas personalizadas</strong><br><br>${itens}</div>`:"";
+}
+
+function val(id){return document.getElementById(id).value.trim()}
+function numeroOuVazio(id){const v=document.getElementById(id).value;return v===""?"":Number(v)}
+
+function salvarJogo(){
+  const id=val("jogoId");
+  const mandante=val("mandante"),visitante=val("visitante"),data=val("data");
+  if(!mandante||!visitante||!data){alert("Preencha mandante, visitante e data.");return}
+  const estrategiaIds=[...document.querySelectorAll(".estrategiaCheck:checked")].map(x=>x.value);
+  const checklistMarcado={};document.querySelectorAll(".checkCriterio").forEach(x=>checklistMarcado[x.dataset.chave]=x.checked);
+  const checkRapido={};document.querySelectorAll(".checkRapido").forEach(x=>checkRapido[x.dataset.chave]=x.checked);
+
+  const dados={
+    mandante,visitante,campeonato:val("campeonato"),data,horario:val("horario"),
+    prioridade:val("prioridade")||"observar",
+    pontoPrincipal:val("pontoPrincipal"),
+    estrategias:estrategiaIds,checklistMarcado,checkRapido,checkExtra:val("checkExtra"),
+    anotacoes:val("anotacoes"),observar:val("observar"),alerta:val("alerta"),
+    alertaAtivo:val("alertaAtivo"),alertaMinutos:Number(val("alertaMinutos")||5),
+    stats:{
+      cartoesCasa:numeroOuVazio("cartoesCasa"),cartoesFora:numeroOuVazio("cartoesFora"),cartoesJuiz:numeroOuVazio("cartoesJuiz"),
+      golsFeitosCasa:numeroOuVazio("golsFeitosCasa"),golsSofridosCasa:numeroOuVazio("golsSofridosCasa"),golsHtCasa:numeroOuVazio("golsHtCasa"),
+      golsHtSofridosCasa:numeroOuVazio("golsHtSofridosCasa"),gols2tCasa:numeroOuVazio("gols2tCasa"),
+      golsFeitosFora:numeroOuVazio("golsFeitosFora"),golsSofridosFora:numeroOuVazio("golsSofridosFora"),golsHtFora:numeroOuVazio("golsHtFora"),
+      golsHtSofridosFora:numeroOuVazio("golsHtSofridosFora"),gols2tFora:numeroOuVazio("gols2tFora"),
+      escanteiosCasa:numeroOuVazio("escanteiosCasa"),escanteiosFora:numeroOuVazio("escanteiosFora"),
+      faltasCasa:numeroOuVazio("faltasCasa"),faltasFora:numeroOuVazio("faltasFora"),
+      ultimosGeralCasa:pegarResultados5("ultimosGeralCasa"),
+      ultimosGeralFora:pegarResultados5("ultimosGeralFora"),
+      ultimosCasa:pegarResultados5("ultimosCasa"),ultimosFora:pegarResultados5("ultimosFora"),
+      h2hGeral:pegarH2H("h2hGeral"),
+      h2hCasa:pegarH2H("h2hCasa"),
+      personalizadas:pegarEstatisticasPersonalizadas()
+    }
+  };
+  if(id){const j=jogos.find(x=>x.id===id);if(j)Object.assign(j,dados)}
+  else jogos.push({id:uid(),...dados,criadoEm:new Date().toISOString(),alertado:false});
+  salvarDados();limparFormularioJogo();abrirTela("agenda");
+}
+
+function editarJogo(id){
+  const j=jogos.find(x=>x.id===id);if(!j)return;
+  const btn=document.getElementById("btnExcluirJogoEdicao");
+  if(btn)btn.style.display="inline-block";
+  abrirTela("novoJogo");
+  jogoId.value=j.id;mandante.value=j.mandante;visitante.value=j.visitante;campeonato.value=j.campeonato||"";data.value=j.data;horario.value=j.horario||"";
+  prioridade.value=j.prioridade||"observar";pontoPrincipal.value=j.pontoPrincipal||"";
+  anotacoes.value=j.anotacoes||"";observar.value=j.observar||"";alerta.value=j.alerta||"";checkExtra.value=j.checkExtra||"";
+  alertaAtivo.value=j.alertaAtivo||"nao";alertaMinutos.value=String(j.alertaMinutos||5);
+  const s=j.stats||{};
+  ["cartoesCasa","cartoesFora","cartoesJuiz","golsFeitosCasa","golsSofridosCasa","golsHtCasa","golsHtSofridosCasa","gols2tCasa","golsFeitosFora","golsSofridosFora","golsHtFora","golsHtSofridosFora","gols2tFora","escanteiosCasa","escanteiosFora","faltasCasa","faltasFora"].forEach(k=>{
+    document.getElementById(k).value=s[k]??"";
+  });
+  renderSelecaoEstrategias(j.estrategias||[]);renderChecklistJogo(j.checklistMarcado||{});renderChecklistRapido(j.checkRapido||{});
+  renderResultados5("ultimosGeralCasa",Array.isArray(s.ultimosGeralCasa)?s.ultimosGeralCasa:[]);
+  renderResultados5("ultimosGeralFora",Array.isArray(s.ultimosGeralFora)?s.ultimosGeralFora:[]);
+  renderResultados5("ultimosCasa",Array.isArray(s.ultimosCasa)?s.ultimosCasa:[]);
+  renderResultados5("ultimosFora",Array.isArray(s.ultimosFora)?s.ultimosFora:[]);
+  renderH2H("h2hGeral",Array.isArray(s.h2hGeral)?s.h2hGeral:[]);
+  renderH2H("h2hCasa",Array.isArray(s.h2hCasa)?s.h2hCasa:[]);
+  renderEstatisticasPersonalizadasEdicao(Array.isArray(s.personalizadas)?s.personalizadas:[]);
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function excluirJogo(id){
+  const listaJogos=JSON.parse(localStorage.getItem("agendaTraderJogos")||"[]");
+  const jogo=listaJogos.find(x=>x.id===id);
+
+  if(!jogo){
+    alert("Jogo não encontrado.");
+    return;
+  }
+
+  const confirmar=window.confirm(
+    'Deseja excluir o jogo "'+jogo.mandante+' x '+jogo.visitante+'"?\n\n' +
+    'Esta ação remove somente este jogo.'
+  );
+  if(!confirmar)return;
+
+  const novosJogos=listaJogos.filter(x=>x.id!==id);
+  localStorage.setItem("agendaTraderJogos",JSON.stringify(novosJogos));
+
+  alert("Jogo excluído com sucesso.");
+  window.location.reload();
+}
+
+function limparFormularioJogo(){
+  const btnExcluirAtual=document.getElementById("btnExcluirJogoEdicao");
+  if(btnExcluirAtual)btnExcluirAtual.style.display="none";
+  ["jogoId","mandante","visitante","campeonato","data","horario","pontoPrincipal","anotacoes","observar","alerta","checkExtra",
+  "cartoesCasa","cartoesFora","cartoesJuiz","golsFeitosCasa","golsSofridosCasa","golsHtCasa","golsHtSofridosCasa","gols2tCasa","golsFeitosFora","golsSofridosFora","golsHtFora","golsHtSofridosFora","gols2tFora","escanteiosCasa","escanteiosFora","faltasCasa","faltasFora"].forEach(id=>document.getElementById(id).value="");
+  prioridade.value="observar";alertaAtivo.value="nao";alertaMinutos.value="5";renderSelecaoEstrategias();renderChecklistJogo();renderChecklistRapido();
+  renderResultados5("ultimosGeralCasa",[]);renderResultados5("ultimosGeralFora",[]);
+  renderResultados5("ultimosCasa",[]);renderResultados5("ultimosFora",[]);
+  renderH2H("h2hGeral",[]);renderH2H("h2hCasa",[]);
+  renderEstatisticasPersonalizadasEdicao([]);
+}
+
+function statsHtml(j){
+  const s=j.stats||{}; const linhas=[];
+  const add=(n,v)=>{if(v!==""&&v!=null)linhas.push(`<div><strong>${n}:</strong> ${esc(v)}</div>`)};
+  add("Cartões mandante (últimos 5)",s.cartoesCasa);
+  add("Cartões visitante (últimos 5)",s.cartoesFora);
+  add("Cartões árbitro (últimos 5)",s.cartoesJuiz);
+
+  add("Gols feitos mandante (últimos 5)",s.golsFeitosCasa);
+  add("Gols sofridos mandante (últimos 5)",s.golsSofridosCasa);
+  add("Gols HT feitos mandante (últimos 5)",s.golsHtCasa);
+  add("Gols HT sofridos mandante (últimos 5)",s.golsHtSofridosCasa);
+  add("Gols 2º tempo mandante (últimos 5)",s.gols2tCasa);
+
+  add("Gols feitos visitante (últimos 5)",s.golsFeitosFora);
+  add("Gols sofridos visitante (últimos 5)",s.golsSofridosFora);
+  add("Gols HT feitos visitante (últimos 5)",s.golsHtFora);
+  add("Gols HT sofridos visitante (últimos 5)",s.golsHtSofridosFora);
+  add("Gols 2º tempo visitante (últimos 5)",s.gols2tFora);
+
+  add("Escanteios mandante (últimos 5)",s.escanteiosCasa);
+  add("Escanteios visitante (últimos 5)",s.escanteiosFora);
+  add("Faltas mandante (últimos 5)",s.faltasCasa);
+  add("Faltas visitante (últimos 5)",s.faltasFora);
+
+  if(Array.isArray(s.ultimosGeralCasa)&&s.ultimosGeralCasa.some(x=>typeof x==="string"?x:(x?.resultado||x?.adversario||x?.placar))) linhas.push(`<div class="box" style="border-left:5px solid #2563eb"><strong style="color:#60a5fa">📌 Últimos 5 jogos gerais do mandante:</strong><br><br>${resultadosHtml(s.ultimosGeralCasa)}</div>`);
+  if(Array.isArray(s.ultimosGeralFora)&&s.ultimosGeralFora.some(x=>typeof x==="string"?x:(x?.resultado||x?.adversario||x?.placar))) linhas.push(`<div class="box" style="border-left:5px solid #7c3aed"><strong style="color:#a78bfa">📌 Últimos 5 jogos gerais do visitante:</strong><br><br>${resultadosHtml(s.ultimosGeralFora)}</div>`);
+  if(Array.isArray(s.ultimosCasa)&&s.ultimosCasa.some(x=>typeof x==="string"?x:(x?.resultado||x?.adversario||x?.placar))) linhas.push(`<div class="box" style="border-left:5px solid #059669"><strong style="color:#34d399">🏠 Últimos 5 jogos do mandante como mandante:</strong><br><br>${resultadosHtml(s.ultimosCasa,"casa")}</div>`);
+  if(Array.isArray(s.ultimosFora)&&s.ultimosFora.some(x=>typeof x==="string"?x:(x?.resultado||x?.adversario||x?.placar))) linhas.push(`<div class="box" style="border-left:5px solid #0d9488"><strong style="color:#2dd4bf">✈️ Últimos 5 jogos do visitante como visitante:</strong><br><br>${resultadosHtml(s.ultimosFora,"fora")}</div>`);
+
+  const nomeCasa=j.mandante||"Mandante";
+  const nomeFora=j.visitante||"Visitante";
+  const h2hGeralBox=h2hHtml(
+    s.h2hGeral,
+    "Confronto direto — últimos 5 jogos geral",
+    nomeCasa,
+    nomeFora,
+    "titulo-salvo-h2h-geral",
+    "⚔️"
+  );
+  const h2hCasaBox=h2hHtml(
+    s.h2hCasa,
+    "Últimos 5 confrontos diretos com o mandante como mandante",
+    nomeCasa,
+    nomeFora,
+    "titulo-salvo-h2h-casa",
+    "🏟️"
+  );
+  if(h2hGeralBox) linhas.push(h2hGeralBox);
+  if(h2hCasaBox) linhas.push(h2hCasaBox);
+
+  const base=linhas.length?`<div class="box stats"><strong>📊 Estatísticas — últimos 5 jogos</strong><br><br>${linhas.join("")}</div>`:"";
+  return base + customStatsHtml(s.personalizadas||[]);
+}
+
+
+function prioridadeHtml(p){
+  if(p==="alta")return '<span class="prioridade prio-alta">🔥 Prioridade alta</span>';
+  if(p==="live")return '<span class="prioridade prio-live">⚠️ Só se confirmar ao vivo</span>';
+  if(p==="descartado")return '<span class="prioridade prio-descartado">❌ Descartado</span>';
+  return '<span class="prioridade prio-observar">👀 Observar</span>';
+}
+function progressoChecklist(j){
+  let total=0, marcados=0;
+
+  const nomes=(j.estrategias||[]).map(id=>estrategias.find(e=>e.id===id)).filter(Boolean);
+  nomes.forEach(e=>{
+    (e.checklist||[]).forEach((_,i)=>{
+      total++;
+      if(j.checklistMarcado?.[e.id+"_"+i])marcados++;
+    });
+  });
+
+  checklistPadrao.forEach((_,i)=>{
+    total++;
+    if(j.checkRapido?.["r"+i])marcados++;
+  });
+
+  if(!total)return {total:0,marcados:0,pct:0};
+  return {total,marcados,pct:Math.round((marcados/total)*100)};
+}
+function duplicarJogo(id){
+  const original=jogos.find(j=>j.id===id);if(!original)return;
+  const copia=JSON.parse(JSON.stringify(original));
+  copia.id=uid();
+  copia.criadoEm=new Date().toISOString();
+  copia.alertado=false;
+  copia.mandante=original.mandante;
+  copia.visitante=original.visitante;
+  jogos.push(copia);
+  salvarDados();
+  renderAgenda();
+  renderHistorico();
+  alert("Jogo duplicado. Você pode editar a cópia.");
+}
+function atualizarFiltroEstrategiasAgenda(){
+  const sel=document.getElementById("filtroEstrategiaAgenda");
+  if(!sel)return;
+  const atual=sel.value;
+  sel.innerHTML='<option value="">Todas as estratégias</option>'+estrategias.map(e=>`<option value="${e.id}">${esc(e.nome)}</option>`).join("");
+  sel.value=atual;
+}
+
+
+function contarResultados(lista){
+  const r={V:0,E:0,D:0,total:0};
+  if(!Array.isArray(lista))return r;
+  lista.forEach(item=>{
+    const res=typeof item==="string"?item:(item?.resultado||"");
+    if(res==="V"||res==="E"||res==="D"){
+      r[res]++;
+      r.total++;
+    }
+  });
+  return r;
+}
+
+function formaTexto(lista){
+  const r=contarResultados(lista);
+  if(!r.total)return "Sem dados";
+  return `${r.V}V / ${r.E}E / ${r.D}D`;
+}
+
+function resumoChecklist(j){
+  const p=progressoChecklist(j);
+  if(!p.total)return "Sem checklist";
+  return `${p.marcados}/${p.total} (${p.pct}%)`;
+}
+
+function estrategiaNomes(j){
+  return (j.estrategias||[])
+    .map(id=>estrategias.find(e=>e.id===id)?.nome)
+    .filter(Boolean);
+}
+
+function estatisticasChave(j){
+  const s=j.stats||{};
+  const itens=[];
+
+  const add=(nome,valor)=>{
+    if(valor!=="" && valor!==null && valor!==undefined){
+      itens.push(`${nome}: ${valor}`);
+    }
+  };
+
+  add("Gols feitos mandante",s.golsFeitosCasa);
+  add("Gols sofridos mandante",s.golsSofridosCasa);
+  add("Gols HT mandante",s.golsHtCasa);
+  add("Gols HT sofridos mandante",s.golsHtSofridosCasa);
+  add("Gols 2º tempo mandante",s.gols2tCasa);
+
+  add("Gols feitos visitante",s.golsFeitosFora);
+  add("Gols sofridos visitante",s.golsSofridosFora);
+  add("Gols HT visitante",s.golsHtFora);
+  add("Gols HT sofridos visitante",s.golsHtSofridosFora);
+  add("Gols 2º tempo visitante",s.gols2tFora);
+
+  add("Cartões mandante",s.cartoesCasa);
+  add("Cartões visitante",s.cartoesFora);
+  add("Cartões árbitro",s.cartoesJuiz);
+  add("Escanteios mandante",s.escanteiosCasa);
+  add("Escanteios visitante",s.escanteiosFora);
+  add("Faltas mandante",s.faltasCasa);
+  add("Faltas visitante",s.faltasFora);
+
+  if(Array.isArray(s.personalizadas)){
+    s.personalizadas.forEach(item=>{
+      if(item && item.nome && item.valor!=="" && item.valor!==null && item.valor!==undefined){
+        itens.push(`${item.nome}: ${item.valor}${item.jogos?` (últimos ${item.jogos})`:""}`);
+      }
+    });
+  }
+
+  return itens;
+}
+
+function gerarTextoResumo(j){
+  const s=j.stats||{};
+  const partes=[];
+  const estrategiasLista=estrategiaNomes(j);
+  const geralCasa=contarResultados(s.ultimosGeralCasa);
+  const geralFora=contarResultados(s.ultimosGeralFora);
+  const casaMandante=contarResultados(s.ultimosCasa);
+  const foraVisitante=contarResultados(s.ultimosFora);
+  const check=progressoChecklist(j);
+
+  if(j.pontoPrincipal){
+    partes.push(`O ponto principal registrado para esta partida é: ${j.pontoPrincipal}.`);
+  }
+
+  if(estrategiasLista.length){
+    partes.push(`O jogo está associado às estratégias ${estrategiasLista.join(", ")}.`);
+  }
+
+  if(geralCasa.total){
+    partes.push(`Nos últimos jogos gerais cadastrados, o mandante apresenta ${geralCasa.V} vitória(s), ${geralCasa.E} empate(s) e ${geralCasa.D} derrota(s).`);
+  }
+
+  if(geralFora.total){
+    partes.push(`O visitante apresenta ${geralFora.V} vitória(s), ${geralFora.E} empate(s) e ${geralFora.D} derrota(s) nos últimos jogos gerais informados.`);
+  }
+
+  if(casaMandante.total){
+    partes.push(`Considerando apenas os jogos do mandante em casa, a sequência registrada é de ${casaMandante.V} vitória(s), ${casaMandante.E} empate(s) e ${casaMandante.D} derrota(s).`);
+  }
+
+  if(foraVisitante.total){
+    partes.push(`Nos jogos do visitante fora de casa, foram registrados ${foraVisitante.V} vitória(s), ${foraVisitante.E} empate(s) e ${foraVisitante.D} derrota(s).`);
+  }
+
+  if(check.total){
+    partes.push(`O checklist possui ${check.marcados} de ${check.total} itens marcados, equivalente a ${check.pct}%.`);
+  }
+
+  const stats=estatisticasChave(j);
+  if(stats.length){
+    partes.push(`Entre os dados numéricos preenchidos estão ${stats.slice(0,6).join("; ")}${stats.length>6?" e outros dados adicionais":""}.`);
+  }
+
+  if(j.observar){
+    partes.push(`Na leitura ao vivo, foi registrado para observar: ${j.observar}.`);
+  }
+
+  if(j.alerta){
+    partes.push(`O alerta pessoal definido foi: ${j.alerta}.`);
+  }
+
+  if(!partes.length){
+    return "Ainda não há informações suficientes preenchidas para gerar um resumo deste jogo.";
+  }
+
+  return partes.join(" ");
+}
+
+function resumoInteligenteHtml(j){
+  const s=j.stats||{};
+  const nomes=estrategiaNomes(j);
+  const stats=estatisticasChave(j);
+
+  return `
+    <div class="resumo-inteligente">
+      <h3>🧠 Resumo Inteligente do Jogo</h3>
+
+      <div class="resumo-grade">
+        <div class="resumo-item">
+          <strong>Estratégias</strong>
+          ${nomes.length?esc(nomes.join(", ")):"Nenhuma"}
+        </div>
+
+        <div class="resumo-item">
+          <strong>Prioridade</strong>
+          ${(j.prioridade==="alta"?"🔥 Alta":j.prioridade==="live"?"⚠️ Confirmar ao vivo":j.prioridade==="descartado"?"❌ Descartado":"👀 Observar")}
+        </div>
+
+        <div class="resumo-item">
+          <strong>Checklist</strong>
+          ${resumoChecklist(j)}
+        </div>
+
+        <div class="resumo-item">
+          <strong>Mandante — geral</strong>
+          ${formaTexto(s.ultimosGeralCasa)}
+        </div>
+
+        <div class="resumo-item">
+          <strong>Visitante — geral</strong>
+          ${formaTexto(s.ultimosGeralFora)}
+        </div>
+
+        <div class="resumo-item">
+          <strong>Mandante em casa</strong>
+          ${formaTexto(s.ultimosCasa)}
+        </div>
+
+        <div class="resumo-item">
+          <strong>Visitante fora</strong>
+          ${formaTexto(s.ultimosFora)}
+        </div>
+
+        <div class="resumo-item">
+          <strong>Estatísticas preenchidas</strong>
+          ${stats.length}
+        </div>
+      </div>
+
+      <div class="resumo-texto">
+        <strong>📝 Resumo explicativo</strong><br><br>
+        ${esc(gerarTextoResumo(j))}
+      </div>
+
+      <div class="nota" style="margin-top:10px">
+        Resumo informativo baseado apenas nos dados cadastrados na ficha.
+      </div>
+    </div>
+  `;
+}
+
+function criarCardJogo(j){
+  const nomes=(j.estrategias||[]).map(id=>estrategias.find(e=>e.id===id)).filter(Boolean);
+  let check="";
+  nomes.forEach(e=>{
+    if(!(e.checklist||[]).length)return;
+    check+=`<div style="margin-top:12px;"><strong>${esc(e.nome)}</strong>`;
+    e.checklist.forEach((item,i)=>{const k=e.id+"_"+i;check+=`<div>${j.checklistMarcado?.[k]?"✅":"⬜"} ${esc(item)}</div>`});
+    check+="</div>";
+  });
+  const rapido=checklistPadrao.map((item,i)=>j.checkRapido?.["r"+i]?`<div>✅ ${esc(item)}</div>`:"").join("");
+  return `<div class="card" id="card-${j.id}">
+    <div class="jogo-resumo" onclick="toggleJogo('${j.id}')">
+      <div class="jogo-datahora"><div class="hora">${esc(j.horario||"--:--")}</div><div class="data">${formatarData(j.data)}</div></div>
+      <div class="jogo-confronto">${esc(j.mandante)} x ${esc(j.visitante)}
+        <div>${nomes.map(e=>`<span class="badge">${esc(e.nome)}</span>`).join("")}</div>
+        ${prioridadeHtml(j.prioridade||"observar")}
+        ${j.alertaAtivo==="sim"?`<div class="alert-status">🔔 alerta ${j.alertaMinutos} min antes</div>`:""}
+      </div>
+      <div class="jogo-seta">▼</div>
+    </div>
+    <div class="jogo-detalhes">
+      <div class="info">${esc(j.campeonato||"Sem campeonato")}</div>
+      ${j.pontoPrincipal?`<div class="ponto-principal"><strong>📌 Ponto principal</strong><br>${esc(j.pontoPrincipal)}</div>`:""}
+      ${(()=>{const p=progressoChecklist(j);return p.total?`<div class="progresso-wrap"><div class="progresso-barra"><div class="progresso-fill" style="width:${p.pct}%"></div></div><div class="progresso-txt">Checklist: ${p.marcados}/${p.total} concluídos (${p.pct}%)</div></div>`:""})()}
+      ${(rapido||j.checkExtra)?`<div class="box"><strong>✅ Checklist rápido</strong><br><br>${rapido}${j.checkExtra?`<div class="check-extra-ok">✅ ${esc(j.checkExtra)}</div>`:""}</div>`:""}
+      ${j.anotacoes?`<div class="box estudo"><strong>📝 Estudo</strong><br><br>${esc(j.anotacoes)}</div>`:""}
+      ${j.observar?`<div class="box observar"><strong>👁 O que observar ao vivo</strong><br><br>${esc(j.observar)}</div>`:""}
+      ${j.alerta?`<div class="box alerta"><strong>⚠️ Alerta pessoal</strong><br><br>${esc(j.alerta)}</div>`:""}
+      ${statsHtml(j)}
+      ${check}
+      ${resumoInteligenteHtml(j)}
+      <div class="acoes">
+        <button class="btn-edit" type="button" onclick="editarJogo('${j.id}');return false;">Editar</button>
+        <button class="btn-blue" type="button" onclick="duplicarJogo('${j.id}');return false;">Duplicar</button>
+        <button class="btn-del" type="button" onclick="pedirExcluirJogo('${j.id}');return false;">Excluir</button>
+      </div>
+    </div>
+  </div>`;
+}
+function toggleJogo(id){document.getElementById("card-"+id)?.classList.toggle("aberto")}
+function mudarDias(d){diasAgenda=d;renderAgenda()}
+function renderAgenda(){
+  atualizarFiltroEstrategiasAgenda();
+  const dt=new Date();dt.setHours(0,0,0,0);dt.setDate(dt.getDate()+diasAgenda);const alvo=dataLocalISO(dt);
+  const termo=(document.getElementById("buscaAgenda")?.value||"").toLowerCase().trim();
+  const filtroE=document.getElementById("filtroEstrategiaAgenda")?.value||"";
+  const filtroP=document.getElementById("filtroPrioridadeAgenda")?.value||"";
+
+  const arr=jogos.filter(j=>{
+    if(j.data!==alvo)return false;
+    if(filtroE && !(j.estrategias||[]).includes(filtroE))return false;
+    if(filtroP && (j.prioridade||"observar")!==filtroP)return false;
+    if(termo){
+      const txt=`${j.mandante} ${j.visitante} ${j.campeonato||""}`.toLowerCase();
+      if(!txt.includes(termo))return false;
+    }
+    return true;
+  }).sort((a,b)=>(a.horario||"").localeCompare(b.horario||""));
+
+  const nomes=["Hoje","Amanhã","Daqui a 2 dias","Daqui a 3 dias"];
+  tituloAgenda.innerHTML=`<h3>${nomes[diasAgenda]} — <span style="color:var(--blue)">${formatarData(alvo)}</span></h3>`;
+  listaAgenda.innerHTML=arr.length?arr.map(criarCardJogo).join(""):'<div class="vazio">Nenhum jogo encontrado nesta data.</div>';
+}
+function renderHistorico(){
+  const termo=buscaHistorico.value.toLowerCase().trim();
+  let arr=[...jogos];
+  if(termo)arr=arr.filter(j=>{
+    const ens=(j.estrategias||[]).map(id=>estrategias.find(e=>e.id===id)?.nome||"").join(" ");
+    return `${j.mandante} ${j.visitante} ${j.campeonato||""} ${ens} ${j.anotacoes||""}`.toLowerCase().includes(termo);
+  });
+  arr.sort((a,b)=>(b.data+" "+(b.horario||"")).localeCompare(a.data+" "+(a.horario||"")));
+  listaHistorico.innerHTML=arr.length?arr.map(criarCardJogo).join(""):'<div class="vazio">Nenhum jogo encontrado.</div>';
+}
+
+function beep(){
+  try{
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);
+    o.frequency.value=880;g.gain.value=.12;o.start();setTimeout(()=>{o.stop();ctx.close()},900);
+  }catch(e){}
+}
+async function pedirNotificacao(){
+  if(!("Notification" in window)){alert("Este navegador não suporta notificações.");return}
+  const p=await Notification.requestPermission();
+  alert(p==="granted"?"Notificações permitidas.":"Permissão de notificação não concedida.");
+}
+function checarAlertas(){
+  const agora=new Date();
+  jogos.forEach(j=>{
+    if(j.alertaAtivo!=="sim"||!j.data||!j.horario)return;
+    const alvo=new Date(`${j.data}T${j.horario}:00`);
+    const diff=(alvo-agora)/60000;
+    const min=Number(j.alertaMinutos||5);
+    if(diff<=min&&diff>min-1&&!j.alertado){
+      beep();
+      if("Notification" in window&&Notification.permission==="granted"){
+        new Notification("Agenda Trader",{body:`${j.mandante} x ${j.visitante} começa em ${min} minutos.`});
+      }else{
+        alert(`🔔 ${j.mandante} x ${j.visitante} começa em ${min} minutos.`);
+      }
+      j.alertado=true;salvarDados();
+    }
+    if(diff>min+2&&j.alertado){j.alertado=false;salvarDados()}
+  });
+}
+
+
+function carregarConfiguracoes(){
+  const cfg=JSON.parse(localStorage.getItem("agendaTraderConfig")||"{}");
+  const tema=cfg.tema||"escuro";
+  document.body.classList.toggle("tema-claro",tema==="claro");
+  if(document.getElementById("temaConfig"))temaConfig.value=tema;
+  if(document.getElementById("nomeAgendaConfig"))nomeAgendaConfig.value=cfg.nomeAgenda||"Agenda Trader";
+  if(document.getElementById("nomeUsuarioConfig"))nomeUsuarioConfig.value=cfg.nomeUsuario||"";
+  atualizarTitulo(cfg);
+}
+function salvarConfiguracoes(){
+  const atual=JSON.parse(localStorage.getItem("agendaTraderConfig")||"{}");
+  const cfg={
+    tema:document.getElementById("temaConfig")?.value||atual.tema||"escuro",
+    nomeAgenda:document.getElementById("nomeAgendaConfig")?.value.trim()||atual.nomeAgenda||"Agenda Trader",
+    nomeUsuario:document.getElementById("nomeUsuarioConfig")?.value.trim()||""
+  };
+  localStorage.setItem("agendaTraderConfig",JSON.stringify(cfg));
+  carregarConfiguracoes();
+}
+function atualizarTitulo(cfg){
+  tituloNome.textContent=cfg.nomeAgenda||"Agenda Trader";
+  subtituloNome.textContent=cfg.nomeUsuario?`${cfg.nomeUsuario} • Seu guia diário de estudos e operações`:"Seu guia diário de estudos e operações";
+}
+
+function prepararBackupLink(link){
+  try{
+    const pacote={
+      versao:24,
+      app:"Agenda Trader",
+      exportadoEm:new Date().toISOString(),
+      estrategias:JSON.parse(localStorage.getItem("agendaTraderEstrategias")||"[]"),
+      jogos:JSON.parse(localStorage.getItem("agendaTraderJogos")||"[]"),
+      configuracoes:JSON.parse(localStorage.getItem("agendaTraderConfig")||"{}")
+    };
+
+    const texto=JSON.stringify(pacote,null,2);
+    const agora=new Date();
+    const nome="agenda-trader-backup-"+
+      agora.getFullYear()+"-"+
+      String(agora.getMonth()+1).padStart(2,"0")+"-"+
+      String(agora.getDate()).padStart(2,"0")+".json";
+
+    // Data URL is prepared synchronously on the user's real click.
+    // The browser then performs the native download as the default action of the link.
+    link.href="data:application/json;charset=utf-8,"+encodeURIComponent(texto);
+    link.download=nome;
+
+    const status=document.getElementById("statusBackup");
+    if(status){
+      status.textContent="✅ Backup preparado. O navegador deve iniciar o download agora.";
+    }
+
+    return true;
+  }catch(e){
+    console.error("Erro ao preparar backup:",e);
+    const status=document.getElementById("statusBackup");
+    if(status)status.textContent="❌ Erro ao preparar backup.";
+    alert("Não foi possível preparar o backup: "+e.message);
+    return false;
+  }
+}
+
+function baixarBackup(){
+  const status=document.getElementById("statusBackup");
+
+  try{
+    const pacote={
+      versao:5,
+      app:"Agenda Trader",
+      exportadoEm:new Date().toISOString(),
+      estrategias:JSON.parse(localStorage.getItem("agendaTraderEstrategias")||"[]"),
+      jogos:JSON.parse(localStorage.getItem("agendaTraderJogos")||"[]"),
+      configuracoes:JSON.parse(localStorage.getItem("agendaTraderConfig")||"{}")
+    };
+
+    const conteudo=JSON.stringify(pacote,null,2);
+    const agora=new Date();
+    const nome="agenda-trader-backup-"+
+      agora.getFullYear()+"-"+
+      String(agora.getMonth()+1).padStart(2,"0")+"-"+
+      String(agora.getDate()).padStart(2,"0")+".json";
+
+    const blob=new Blob([conteudo],{type:"application/json;charset=utf-8"});
+    const url=URL.createObjectURL(blob);
+    const link=document.createElement("a");
+
+    link.href=url;
+    link.download=nome;
+    link.style.display="none";
+    document.body.appendChild(link);
+    link.click();
+
+    setTimeout(()=>{
+      try{link.remove();}catch(e){}
+      URL.revokeObjectURL(url);
+    },2500);
+
+    if(status){
+      status.textContent="✅ Backup enviado para o navegador. Verifique a pasta Downloads.";
+    }
+  }catch(erro){
+    console.error(erro);
+
+    try{
+      const pacote={
+        versao:5,
+        app:"Agenda Trader",
+        exportadoEm:new Date().toISOString(),
+        estrategias:JSON.parse(localStorage.getItem("agendaTraderEstrategias")||"[]"),
+        jogos:JSON.parse(localStorage.getItem("agendaTraderJogos")||"[]"),
+        configuracoes:JSON.parse(localStorage.getItem("agendaTraderConfig")||"{}")
+      };
+      const conteudo=JSON.stringify(pacote,null,2);
+      const link=document.createElement("a");
+      link.href="data:application/json;charset=utf-8,"+encodeURIComponent(conteudo);
+      link.download="agenda-trader-backup.json";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      if(status)status.textContent="✅ Backup solicitado pelo modo alternativo.";
+    }catch(fallbackErro){
+      if(status)status.textContent="❌ Não foi possível gerar o backup.";
+      alert("Erro ao baixar backup: "+fallbackErro.message);
+    }
+  }
+}
+
+function restaurarBackup(event){
+  const arquivo=event.target.files?.[0];
+  if(!arquivo)return;
+
+  const leitor=new FileReader();
+  leitor.onload=()=>{
+    try{
+      const pacote=JSON.parse(leitor.result);
+      if(!pacote || !Array.isArray(pacote.estrategias) || !Array.isArray(pacote.jogos)){
+        throw new Error("Formato inválido");
+      }
+
+      if(!confirm("Restaurar este backup? Os jogos e estratégias atuais serão substituídos.")){
+        event.target.value="";
+        return;
+      }
+
+      estrategias=pacote.estrategias;
+      jogos=pacote.jogos;
+      salvarDados();
+
+      if(pacote.configuracoes){
+        localStorage.setItem("agendaTraderConfig",JSON.stringify(pacote.configuracoes));
+      }
+
+      carregarConfiguracoes();
+      atualizarFiltroEstrategiasAgenda();
+      renderAgenda();
+      renderEstrategias();
+      renderHistorico();
+
+      const status=document.getElementById("statusBackup");
+      if(status)status.textContent="✅ Backup restaurado com sucesso.";
+      alert("Backup restaurado com sucesso.");
+    }catch(e){
+      console.error(e);
+      alert("Arquivo de backup inválido ou corrompido.");
+    }
+    event.target.value="";
+  };
+  leitor.onerror=()=>{
+    alert("Não foi possível ler o arquivo.");
+    event.target.value="";
+  };
+  leitor.readAsText(arquivo,"UTF-8");
+}
+
+function excluirSomenteJogos(){
+  const listaJogos=JSON.parse(localStorage.getItem("agendaTraderJogos")||"[]");
+
+  if(!listaJogos.length){
+    alert("Não há jogos salvos para excluir.");
+    return;
+  }
+
+  const primeira=window.confirm(
+    "Excluir todos os jogos salvos?\n\n" +
+    "Quantidade: "+listaJogos.length+"\n" +
+    "As estratégias serão mantidas."
+  );
+  if(!primeira)return;
+
+  const segunda=window.confirm(
+    "Confirma a exclusão de TODOS os jogos?\n\n" +
+    "Essa ação não pode ser desfeita sem um backup."
+  );
+  if(!segunda)return;
+
+  localStorage.setItem("agendaTraderJogos","[]");
+  alert("Todos os jogos foram excluídos. As estratégias foram mantidas.");
+  window.location.reload();
+}
+
+function excluirTudoDados(){
+  const listaJogos=JSON.parse(localStorage.getItem("agendaTraderJogos")||"[]");
+  const listaEstrategias=JSON.parse(localStorage.getItem("agendaTraderEstrategias")||"[]");
+
+  if(!listaJogos.length && !listaEstrategias.length){
+    alert("Não há jogos nem estratégias para excluir.");
+    return;
+  }
+
+  const primeira=window.confirm(
+    "Excluir todos os jogos e todas as estratégias?\n\n" +
+    "Jogos: "+listaJogos.length+"\n" +
+    "Estratégias: "+listaEstrategias.length
+  );
+  if(!primeira)return;
+
+  const segunda=window.confirm(
+    "CONFIRMAÇÃO FINAL\n\n" +
+    "Todos os jogos e estratégias serão apagados."
+  );
+  if(!segunda)return;
+
+  localStorage.setItem("agendaTraderJogos","[]");
+  localStorage.setItem("agendaTraderEstrategias","[]");
+
+  alert("Todos os jogos e estratégias foram excluídos.");
+  window.location.reload();
+}
+
+function excluirJogoEmEdicao(){
+  const campo=document.getElementById("jogoId");
+  const id=campo?campo.value:"";
+
+  if(!id){
+    alert("Nenhum jogo está sendo editado.");
+    return;
+  }
+
+  excluirJogo(id);
+}
+
+function excluirEstrategiaEmEdicao(){
+  const campo=document.getElementById("estrategiaId");
+  const id=campo?campo.value:"";
+
+  if(!id){
+    alert("Nenhuma estratégia está sendo editada.");
+    return;
+  }
+
+  excluirEstrategia(id);
+}
+
+
+
+
+// ===== CONTROLES CRÍTICOS V20: BACKUP E EXCLUSÕES =====
+(function(){
+  function lerJSON(chave,padrao){
+    try{
+      const bruto=localStorage.getItem(chave);
+      if(bruto===null)return padrao;
+      const valor=JSON.parse(bruto);
+      return valor;
+    }catch(e){
+      console.error("Erro ao ler "+chave,e);
+      return padrao;
+    }
+  }
+
+  function gravarJSON(chave,valor){
+    try{
+      localStorage.setItem(chave,JSON.stringify(valor));
+      return true;
+    }catch(e){
+      console.error("Erro ao salvar "+chave,e);
+      alert("O navegador bloqueou o salvamento local. Erro: "+e.message);
+      return false;
+    }
+  }
+
+  function recarregar(){
+    try{ window.location.reload(); }
+    catch(e){ renderAgenda(); renderHistorico(); renderEstrategias(); }
+  }
+
+  window.baixarBackupSeguro = async function(){
+    const status=document.getElementById("statusBackup");
+    try{
+      const pacote={
+        versao:20,
+        app:"Agenda Trader",
+        exportadoEm:new Date().toISOString(),
+        estrategias:lerJSON("agendaTraderEstrategias",[]),
+        jogos:lerJSON("agendaTraderJogos",[]),
+        configuracoes:lerJSON("agendaTraderConfig",{})
+      };
+
+      const texto=JSON.stringify(pacote,null,2);
+      const data=new Date();
+      const nome="agenda-trader-backup-"+data.getFullYear()+"-"+String(data.getMonth()+1).padStart(2,"0")+"-"+String(data.getDate()).padStart(2,"0")+".json";
+
+      // Chrome/Edge desktop: abre a janela nativa "Salvar como".
+      if(typeof window.showSaveFilePicker==="function"){
+        const handle=await window.showSaveFilePicker({
+          suggestedName:nome,
+          types:[{
+            description:"Backup Agenda Trader",
+            accept:{"application/json":[".json"]}
+          }]
+        });
+        const writable=await handle.createWritable();
+        await writable.write(texto);
+        await writable.close();
+        if(status)status.textContent="✅ Backup salvo com sucesso.";
+        alert("Backup salvo com sucesso.");
+        return;
+      }
+
+      // Fallback para navegadores sem File System Access API.
+      const blob=new Blob([texto],{type:"application/json;charset=utf-8"});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement("a");
+      a.href=url;
+      a.download=nome;
+      a.style.display="none";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),5000);
+
+      if(status)status.textContent="✅ Download do backup iniciado. Verifique a pasta Downloads.";
+    }catch(e){
+      if(e && e.name==="AbortError"){
+        if(status)status.textContent="Backup cancelado.";
+        return;
+      }
+      console.error("Erro no backup",e);
+      if(status)status.textContent="❌ Erro no backup: "+e.message;
+      alert("Não foi possível salvar o backup.\n\n"+e.message);
+    }
+  };
+
+  window.excluirJogoSeguro = function(id){
+    const lista=lerJSON("agendaTraderJogos",[]);
+    const jogo=lista.find(j=>j.id===id);
+    if(!jogo){ alert("Jogo não encontrado."); return; }
+
+    const ok=window.confirm(
+      'Excluir o jogo "'+jogo.mandante+' x '+jogo.visitante+'"?\n\nEsta ação não pode ser desfeita.'
+    );
+    if(!ok)return;
+
+    const novaLista=lista.filter(j=>j.id!==id);
+    if(!gravarJSON("agendaTraderJogos",novaLista))return;
+
+    alert("Jogo excluído com sucesso.");
+    recarregar();
+  };
+
+  window.excluirEstrategiaSeguro = function(id){
+    const listaE=lerJSON("agendaTraderEstrategias",[]);
+    const listaJ=lerJSON("agendaTraderJogos",[]);
+    const estrategia=listaE.find(e=>e.id===id);
+    if(!estrategia){ alert("Estratégia não encontrada."); return; }
+
+    const ok=window.confirm(
+      'Excluir a estratégia "'+estrategia.nome+'"?\n\nEla será removida também dos jogos vinculados.'
+    );
+    if(!ok)return;
+
+    const novasE=listaE.filter(e=>e.id!==id);
+    const novosJ=listaJ.map(j=>({
+      ...j,
+      estrategias:(j.estrategias||[]).filter(eid=>eid!==id)
+    }));
+
+    if(!gravarJSON("agendaTraderEstrategias",novasE))return;
+    if(!gravarJSON("agendaTraderJogos",novosJ))return;
+
+    alert("Estratégia excluída com sucesso.");
+    recarregar();
+  };
+
+  window.excluirSomenteJogosSeguro = function(){
+    const lista=lerJSON("agendaTraderJogos",[]);
+    if(!lista.length){ alert("Não há jogos salvos para excluir."); return; }
+
+    const ok=window.confirm(
+      "Excluir TODOS os jogos salvos?\n\nQuantidade: "+lista.length+"\n\nAs estratégias serão mantidas."
+    );
+    if(!ok)return;
+
+    const final=window.confirm("Confirma a exclusão de todos os jogos?");
+    if(!final)return;
+
+    if(!gravarJSON("agendaTraderJogos",[]))return;
+
+    alert("Todos os jogos foram excluídos. As estratégias foram mantidas.");
+    recarregar();
+  };
+
+  window.excluirTudoSeguro = function(){
+    const listaJ=lerJSON("agendaTraderJogos",[]);
+    const listaE=lerJSON("agendaTraderEstrategias",[]);
+
+    if(!listaJ.length && !listaE.length){
+      alert("Não há jogos nem estratégias para excluir.");
+      return;
+    }
+
+    const ok=window.confirm(
+      "Excluir TODOS os jogos e TODAS as estratégias?\n\nJogos: "+listaJ.length+"\nEstratégias: "+listaE.length
+    );
+    if(!ok)return;
+
+    const final=window.confirm(
+      "CONFIRMAÇÃO FINAL\n\nEsta ação não pode ser desfeita sem um backup."
+    );
+    if(!final)return;
+
+    if(!gravarJSON("agendaTraderJogos",[]))return;
+    if(!gravarJSON("agendaTraderEstrategias",[]))return;
+
+    alert("Todos os jogos e estratégias foram excluídos.");
+    recarregar();
+  };
+
+  window.excluirJogoEdicaoSeguro = function(){
+    const el=document.getElementById("jogoId");
+    const id=el?el.value:"";
+    if(!id){ alert("Nenhum jogo está sendo editado."); return; }
+    window.excluirJogoSeguro(id);
+  };
+
+  window.excluirEstrategiaEdicaoSeguro = function(){
+    const el=document.getElementById("estrategiaId");
+    const id=el?el.value:"";
+    if(!id){ alert("Nenhuma estratégia está sendo editada."); return; }
+    window.excluirEstrategiaSeguro(id);
+  };
+
+  const st=document.getElementById("statusSistema");
+  if(st)st.textContent="✅ Sistema de backup e exclusões carregado.";
+})();
+
+
+let acaoConfirmadaAtual=null;
+
+function abrirModalConfirmacao(titulo,mensagem,acao){
+  document.getElementById("modalTitulo").textContent=titulo;
+  document.getElementById("modalMensagem").innerHTML=mensagem;
+  acaoConfirmadaAtual=acao;
+  document.getElementById("modalConfirmacao").classList.add("aberto");
+}
+
+function fecharModalConfirmacao(){
+  document.getElementById("modalConfirmacao").classList.remove("aberto");
+  acaoConfirmadaAtual=null;
+}
+
+document.addEventListener("DOMContentLoaded",function(){
+  const btn=document.getElementById("modalConfirmarBtn");
+  if(btn){
+    btn.onclick=function(){
+      const acao=acaoConfirmadaAtual;
+      fecharModalConfirmacao();
+      if(typeof acao==="function")acao();
+    };
+  }
+});
+
+function salvarArrayLocal(chave,valor){
+  localStorage.setItem(chave,JSON.stringify(valor));
+  if(typeof agendarSyncNuvem==="function")agendarSyncNuvem();
+}
+
+function pedirExcluirJogo(id){
+  const lista=JSON.parse(localStorage.getItem("agendaTraderJogos")||"[]");
+  const jogo=lista.find(j=>j.id===id);
+  if(!jogo){alert("Jogo não encontrado.");return;}
+
+  abrirModalConfirmacao(
+    "Excluir jogo",
+    `<strong>${esc(jogo.mandante)} x ${esc(jogo.visitante)}</strong><br><br>Deseja realmente excluir este jogo?`,
+    function(){
+      const nova=lista.filter(j=>j.id!==id);
+      salvarArrayLocal("agendaTraderJogos",nova);
+      jogos=nova;
+      renderAgenda();
+      renderHistorico();
+      alert("Jogo excluído.");
+    }
+  );
+}
+
+function pedirExcluirEstrategia(id){
+  const listaE=JSON.parse(localStorage.getItem("agendaTraderEstrategias")||"[]");
+  const listaJ=JSON.parse(localStorage.getItem("agendaTraderJogos")||"[]");
+  const e=listaE.find(x=>x.id===id);
+  if(!e){alert("Estratégia não encontrada.");return;}
+
+  abrirModalConfirmacao(
+    "Excluir estratégia",
+    `<strong>${esc(e.nome)}</strong><br><br>Deseja realmente excluir esta estratégia? Ela será removida também dos jogos vinculados.`,
+    function(){
+      const novasE=listaE.filter(x=>x.id!==id);
+      const novosJ=listaJ.map(j=>({...j,estrategias:(j.estrategias||[]).filter(eid=>eid!==id)}));
+      salvarArrayLocal("agendaTraderEstrategias",novasE);
+      salvarArrayLocal("agendaTraderJogos",novosJ);
+      estrategias=novasE;
+      jogos=novosJ;
+      renderEstrategias();
+      renderAgenda();
+      renderHistorico();
+      atualizarFiltroEstrategiasAgenda();
+      alert("Estratégia excluída.");
+    }
+  );
+}
+
+function pedirExcluirSomenteJogos(){
+  const lista=JSON.parse(localStorage.getItem("agendaTraderJogos")||"[]");
+  if(!lista.length){alert("Não há jogos para excluir.");return;}
+
+  abrirModalConfirmacao(
+    "Excluir somente jogos",
+    `Serão excluídos <strong>${lista.length} jogo(s)</strong>.<br><br>As estratégias serão mantidas.`,
+    function(){
+      salvarArrayLocal("agendaTraderJogos",[]);
+      jogos=[];
+      renderAgenda();
+      renderHistorico();
+      alert("Todos os jogos foram excluídos.");
+    }
+  );
+}
+
+function pedirExcluirTudo(){
+  const listaJ=JSON.parse(localStorage.getItem("agendaTraderJogos")||"[]");
+  const listaE=JSON.parse(localStorage.getItem("agendaTraderEstrategias")||"[]");
+  if(!listaJ.length&&!listaE.length){alert("Não há dados para excluir.");return;}
+
+  abrirModalConfirmacao(
+    "Excluir jogos + estratégias",
+    `Jogos: <strong>${listaJ.length}</strong><br>Estratégias: <strong>${listaE.length}</strong><br><br>Deseja excluir tudo?`,
+    function(){
+      salvarArrayLocal("agendaTraderJogos",[]);
+      salvarArrayLocal("agendaTraderEstrategias",[]);
+      jogos=[];
+      estrategias=[];
+      renderAgenda();
+      renderHistorico();
+      renderEstrategias();
+      atualizarFiltroEstrategiasAgenda();
+      alert("Jogos e estratégias excluídos.");
+    }
+  );
+}
+
+function pedirExcluirJogoEdicao(){
+  const id=document.getElementById("jogoId").value;
+  if(!id){alert("Nenhum jogo em edição.");return;}
+  pedirExcluirJogo(id);
+}
+
+function pedirExcluirEstrategiaEdicao(){
+  const id=document.getElementById("estrategiaId").value;
+  if(!id){alert("Nenhuma estratégia em edição.");return;}
+  pedirExcluirEstrategia(id);
+}
+
+function montarBackup(){
+  return {
+    versao:21,
+    app:"Agenda Trader",
+    exportadoEm:new Date().toISOString(),
+    estrategias:JSON.parse(localStorage.getItem("agendaTraderEstrategias")||"[]"),
+    jogos:JSON.parse(localStorage.getItem("agendaTraderJogos")||"[]"),
+    configuracoes:JSON.parse(localStorage.getItem("agendaTraderConfig")||"{}")
+  };
+}
+
+function gerarBackupVisual(){
+  const texto=JSON.stringify(montarBackup(),null,2);
+  document.getElementById("backupTexto").value=texto;
+  document.getElementById("statusBackup").textContent="✅ Backup gerado abaixo. Você pode copiar ou baixar quando abrir o arquivo diretamente no navegador.";
+
+  try{
+    const blob=new Blob([texto],{type:"application/json;charset=utf-8"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;
+    a.download="agenda-trader-backup.json";
+    a.style.display="none";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),3000);
+  }catch(e){}
+}
+
+async function copiarBackup(){
+  const area=document.getElementById("backupTexto");
+  if(!area.value)area.value=JSON.stringify(montarBackup(),null,2);
+
+  try{
+    await navigator.clipboard.writeText(area.value);
+    document.getElementById("statusBackup").textContent="✅ Backup copiado para a área de transferência.";
+  }catch(e){
+    area.focus();
+    area.select();
+    document.execCommand("copy");
+    document.getElementById("statusBackup").textContent="✅ Backup selecionado/copiad​o.";
+  }
+}
+
+function restaurarBackupVisual(event){
+  const arquivo=event.target.files?.[0];
+  if(!arquivo)return;
+
+  const leitor=new FileReader();
+  leitor.onload=function(){
+    try{
+      const pacote=JSON.parse(leitor.result);
+      if(!Array.isArray(pacote.jogos)||!Array.isArray(pacote.estrategias))throw new Error("Backup inválido");
+
+      abrirModalConfirmacao(
+        "Restaurar backup",
+        "Os dados atuais serão substituídos pelos dados do arquivo. Deseja continuar?",
+        function(){
+          salvarArrayLocal("agendaTraderJogos",pacote.jogos);
+          salvarArrayLocal("agendaTraderEstrategias",pacote.estrategias);
+          if(pacote.configuracoes)localStorage.setItem("agendaTraderConfig",JSON.stringify(pacote.configuracoes));
+          jogos=pacote.jogos;
+          estrategias=pacote.estrategias;
+          carregarConfiguracoes();
+          renderAgenda();
+          renderHistorico();
+          renderEstrategias();
+          atualizarFiltroEstrategiasAgenda();
+          alert("Backup restaurado.");
+        }
+      );
+    }catch(e){
+      alert("Arquivo de backup inválido.");
+    }
+    event.target.value="";
+  };
+  leitor.readAsText(arquivo);
+}
+
+const statusSistemaEl=document.getElementById("statusSistema");
+if(statusSistemaEl)statusSistemaEl.textContent="✅ Controles de backup e exclusão V21 carregados.";
+
+setInterval(checarAlertas,30000);
+document.addEventListener("DOMContentLoaded",function(){
+  try{
+    carregarConfiguracoes();
+    atualizarFiltroEstrategiasAgenda();
+    renderAgenda();
+    renderChecklistRapido();
+    renderResultados5('ultimosGeralCasa',[]);
+    renderResultados5('ultimosGeralFora',[]);
+    renderResultados5('ultimosCasa',[]);
+    renderResultados5('ultimosFora',[]);
+    renderH2H('h2hGeral',[]);
+    renderH2H('h2hCasa',[]);
+  }catch(e){
+    console.error("Erro ao iniciar Agenda Trader:",e);
+    const corpo=document.body;
+    const aviso=document.createElement("div");
+    aviso.style.cssText="position:fixed;left:10px;right:10px;bottom:10px;z-index:99999;background:#7f1d1d;color:white;padding:12px;border-radius:10px;font-family:Arial";
+    aviso.textContent="Erro ao iniciar o app: "+e.message;
+    corpo.appendChild(aviso);
+  }
+});
+</script>
+
+</body>
+</html>
