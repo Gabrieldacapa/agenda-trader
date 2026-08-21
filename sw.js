@@ -1,4 +1,4 @@
-const CACHE_NAME = "agenda-trader-v36";
+const CACHE_NAME = "agenda-trader-v37";
 const APP_SHELL = [
   "./manifest.webmanifest",
   "./icon-192.png",
@@ -29,7 +29,7 @@ self.addEventListener("fetch", event => {
         if (!response.ok) return response;
         let html = await response.text();
         html = html.replace(/<link\s+rel="stylesheet"\s+href="\.\/modern-ui\.css(?:\?[^\"]*)?">/i, "");
-        html = html.replace("</head>", '<link rel="stylesheet" href="./modern-ui.css?v=36"><script defer src="./club-badges.js?v=36"></script></head>');
+        html = html.replace("</head>", '<link rel="stylesheet" href="./modern-ui.css?v=37"><script defer src="./club-badges.js?v=37"></script></head>');
         const headers = new Headers(response.headers);
         headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
         return new Response(html, {status:response.status,statusText:response.statusText,headers});
