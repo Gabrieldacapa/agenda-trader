@@ -432,6 +432,8 @@ body.tema-claro .auth-card .auth-sub{color:#64748b}
 body.tema-claro .auth-tabs button{background:#e2e8f0;color:#0f172a;border-color:#cbd5e1}
 </style>
 
+<link rel="stylesheet" href="./modern-light.css">
+
 <link rel="manifest" href="./manifest.webmanifest">
 <meta name="theme-color" content="#0f172a">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1971,7 +1973,7 @@ function checarAlertas(){
 
 function carregarConfiguracoes(){
   const cfg=JSON.parse(localStorage.getItem("agendaTraderConfig")||"{}");
-  const tema=cfg.tema||"escuro";
+  const tema=cfg.tema||"claro";
   document.body.classList.toggle("tema-claro",tema==="claro");
   if(document.getElementById("temaConfig"))temaConfig.value=tema;
   if(document.getElementById("nomeAgendaConfig"))nomeAgendaConfig.value=cfg.nomeAgenda||"Agenda Trader";
