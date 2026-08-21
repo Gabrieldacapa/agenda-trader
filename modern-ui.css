@@ -1,202 +1,252 @@
-/* Agenda Trader — interface moderna 2026. Somente visual. */
+/* Agenda Trader — visual aprovado. SOMENTE CSS. Nenhuma funcionalidade alterada. */
 
 html body{
   --ui-bg:#0b1220;
+  --ui-side:#0f172a;
   --ui-surface:#111a29;
   --ui-surface-2:#162235;
   --ui-line:#27364a;
   --ui-text:#f8fafc;
   --ui-muted:#94a3b8;
-  --ui-accent:#3b82f6;
+  --ui-accent:#2563eb;
   --ui-accent-soft:#172554;
-  --ui-shadow:0 12px 34px rgba(0,0,0,.22);
+  --ui-shadow:0 8px 28px rgba(0,0,0,.18);
   background:var(--ui-bg)!important;
   color:var(--ui-text)!important;
   font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif!important;
 }
-
 html body.tema-claro{
-  --ui-bg:#f6f8fc;
+  --ui-bg:#f7f9fc;
+  --ui-side:#ffffff;
   --ui-surface:#ffffff;
   --ui-surface-2:#f8fafc;
-  --ui-line:#e4eaf1;
-  --ui-text:#172033;
-  --ui-muted:#748195;
-  --ui-accent:#2563eb;
+  --ui-line:#e5eaf1;
+  --ui-text:#142033;
+  --ui-muted:#718096;
+  --ui-accent:#0b67f0;
   --ui-accent-soft:#eaf2ff;
-  --ui-shadow:0 12px 34px rgba(15,23,42,.06);
+  --ui-shadow:0 8px 28px rgba(15,23,42,.055);
 }
 
-/* topo */
-html body header{
-  position:static!important;
-  max-width:1180px!important;
-  margin:20px auto 10px!important;
-  padding:20px 24px 20px 86px!important;
-  text-align:left!important;
-  background:var(--ui-surface)!important;
-  border:1px solid var(--ui-line)!important;
-  border-radius:20px!important;
-  box-shadow:var(--ui-shadow)!important;
-}
-html body header::before{
-  content:"AT";
-  position:absolute;
-  transform:translate(-62px,-2px);
-  width:48px;
-  height:48px;
-  display:grid;
-  place-items:center;
-  border-radius:14px;
-  background:var(--ui-accent);
-  color:#fff;
-  font-size:14px;
-  font-weight:900;
-  letter-spacing:.6px;
-  box-shadow:0 10px 22px rgba(37,99,235,.25);
-}
-html body header h1{
-  margin:0!important;
-  font-size:0!important;
-  line-height:1.1!important;
-}
-html body header h1 #tituloNome{
-  font-size:23px!important;
-  color:var(--ui-text)!important;
-  font-weight:850!important;
-  letter-spacing:-.45px!important;
-}
-html body header small{
-  display:block!important;
-  margin-top:6px!important;
-  color:var(--ui-muted)!important;
-  font-size:12px!important;
+/* ===== DESKTOP: BARRA LATERAL ===== */
+@media(min-width:901px){
+  html body #appPrincipal{min-height:100vh!important}
+
+  html body header{
+    position:fixed!important;
+    left:0!important;
+    top:0!important;
+    z-index:50!important;
+    width:270px!important;
+    height:96px!important;
+    margin:0!important;
+    padding:27px 22px 20px 68px!important;
+    text-align:left!important;
+    background:var(--ui-side)!important;
+    border:0!important;
+    border-right:1px solid var(--ui-line)!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+  }
+  html body header::before{
+    content:"✓";
+    position:absolute!important;
+    left:22px!important;
+    top:27px!important;
+    transform:none!important;
+    width:36px!important;
+    height:36px!important;
+    display:grid!important;
+    place-items:center!important;
+    border:2px solid var(--ui-accent)!important;
+    border-radius:8px!important;
+    color:var(--ui-accent)!important;
+    background:transparent!important;
+    font-size:19px!important;
+    font-weight:900!important;
+    box-shadow:none!important;
+  }
+  html body header h1{font-size:0!important;margin:0!important;line-height:1.1!important}
+  html body header h1 #tituloNome{
+    font-size:22px!important;
+    color:var(--ui-text)!important;
+    font-weight:850!important;
+    letter-spacing:-.5px!important;
+  }
+  html body header small{
+    display:block!important;
+    margin-top:5px!important;
+    color:var(--ui-muted)!important;
+    font-size:11px!important;
+  }
+
+  html body nav{
+    position:fixed!important;
+    left:0!important;
+    top:96px!important;
+    bottom:150px!important;
+    z-index:49!important;
+    width:270px!important;
+    margin:0!important;
+    padding:16px 14px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    justify-content:flex-start!important;
+    gap:7px!important;
+    overflow-y:auto!important;
+    background:var(--ui-side)!important;
+    border:0!important;
+    border-right:1px solid var(--ui-line)!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+  }
+  html body nav button{
+    position:relative!important;
+    width:100%!important;
+    text-align:left!important;
+    padding:13px 15px 13px 50px!important;
+    background:transparent!important;
+    color:var(--ui-text)!important;
+    border:0!important;
+    border-radius:12px!important;
+    font-size:14px!important;
+    font-weight:650!important;
+    box-shadow:none!important;
+  }
+  html body nav button::before{
+    position:absolute!important;
+    left:17px!important;
+    top:50%!important;
+    transform:translateY(-50%)!important;
+    width:20px!important;
+    text-align:center!important;
+    color:var(--ui-muted)!important;
+    font-size:16px!important;
+  }
+  html body nav button:nth-child(1)::before{content:"⌂"}
+  html body nav button:nth-child(2)::before{content:"＋"}
+  html body nav button:nth-child(3)::before{content:"◎"}
+  html body nav button:nth-child(4)::before{content:"◷"}
+  html body nav button:nth-child(5)::before{content:"⚙"}
+  html body nav button:first-child{
+    background:var(--ui-accent-soft)!important;
+    color:var(--ui-accent)!important;
+    box-shadow:inset 3px 0 0 var(--ui-accent)!important;
+  }
+  html body nav button:first-child::before{color:var(--ui-accent)!important}
+  html body nav button:hover{
+    background:var(--ui-accent-soft)!important;
+    color:var(--ui-accent)!important;
+  }
+
+  html body .conta-barra{
+    position:fixed!important;
+    left:0!important;
+    bottom:0!important;
+    z-index:50!important;
+    width:270px!important;
+    height:150px!important;
+    margin:0!important;
+    padding:18px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+    gap:7px!important;
+    background:var(--ui-side)!important;
+    border:0!important;
+    border-right:1px solid var(--ui-line)!important;
+    border-top:1px solid var(--ui-line)!important;
+    color:var(--ui-muted)!important;
+    font-size:11px!important;
+  }
+  html body .conta-barra::before{
+    content:"G";
+    width:38px!important;
+    height:38px!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:50%!important;
+    background:var(--ui-accent-soft)!important;
+    color:var(--ui-accent)!important;
+    font-size:15px!important;
+    font-weight:900!important;
+  }
+  html body .conta-barra button{
+    position:absolute!important;
+    right:16px!important;
+    bottom:18px!important;
+    padding:7px 11px!important;
+    background:var(--ui-surface-2)!important;
+    color:var(--ui-text)!important;
+    border:1px solid var(--ui-line)!important;
+    border-radius:9px!important;
+  }
+
+  html body .container{
+    max-width:none!important;
+    margin:0 0 0 270px!important;
+    padding:34px 38px 54px!important;
+  }
 }
 
-/* navegação */
-html body nav{
-  position:static!important;
-  top:auto!important;
-  max-width:1180px!important;
-  margin:0 auto!important;
-  padding:6px!important;
-  justify-content:flex-start!important;
-  gap:5px!important;
-  background:var(--ui-surface)!important;
-  border:1px solid var(--ui-line)!important;
-  border-radius:16px!important;
-  box-shadow:0 6px 18px rgba(0,0,0,.08)!important;
-}
-html body nav button{
-  background:transparent!important;
-  color:var(--ui-muted)!important;
-  border:0!important;
-  border-radius:11px!important;
-  padding:10px 16px!important;
-  font-size:13px!important;
-  font-weight:750!important;
-  box-shadow:none!important;
-}
-html body nav button:first-child{
-  background:var(--ui-accent)!important;
-  color:#fff!important;
-  box-shadow:0 5px 14px rgba(37,99,235,.22)!important;
-}
-html body nav button:hover{
-  background:var(--ui-accent-soft)!important;
-  color:#93c5fd!important;
-}
-html body.tema-claro nav button:hover{color:#1d4ed8!important}
-html body nav button:first-child:hover{background:#1d4ed8!important;color:#fff!important}
-
-/* conta */
-html body .conta-barra{
-  max-width:1180px!important;
-  margin:6px auto 0!important;
-  padding:4px 6px!important;
-  background:transparent!important;
-  border:0!important;
-  color:var(--ui-muted)!important;
-  font-size:11px!important;
-}
-html body .conta-barra button{
-  background:var(--ui-surface-2)!important;
-  color:var(--ui-text)!important;
-  border:1px solid var(--ui-line)!important;
-  border-radius:9px!important;
-  padding:7px 10px!important;
-}
-
-/* conteúdo */
-html body .container{
-  max-width:1180px!important;
-  margin:0 auto!important;
-  padding:24px 0 50px!important;
-}
+/* ===== CONTEÚDO PRINCIPAL ===== */
 html body section>h2{
-  margin:2px 0 20px!important;
+  margin:0 0 8px!important;
   color:var(--ui-text)!important;
-  font-size:30px!important;
+  font-size:29px!important;
   font-weight:850!important;
-  letter-spacing:-.8px!important;
-}
-html body #agenda>h2::before{
-  content:"VISÃO DO DIA";
-  display:block;
-  margin-bottom:5px;
-  color:var(--ui-accent);
-  font-size:10px;
-  font-weight:900;
-  letter-spacing:1.6px;
+  letter-spacing:-.7px!important;
 }
 html body #agenda>h2::after{
   content:"Organize seus jogos e consulte suas anotações em um toque.";
-  display:block;
-  margin-top:7px;
-  color:var(--ui-muted);
-  font-size:13px;
-  font-weight:500;
-  letter-spacing:0;
+  display:block!important;
+  margin-top:6px!important;
+  color:var(--ui-muted)!important;
+  font-size:13px!important;
+  font-weight:500!important;
+  letter-spacing:0!important;
 }
 
-/* datas */
 html body .pills{
   display:flex!important;
-  gap:7px!important;
-  margin:0 0 16px!important;
+  gap:9px!important;
+  margin:24px 0 15px!important;
+  flex-wrap:wrap!important;
 }
 html body .pills button{
   background:var(--ui-surface)!important;
-  color:var(--ui-muted)!important;
+  color:var(--ui-text)!important;
   border:1px solid var(--ui-line)!important;
-  border-radius:11px!important;
-  padding:8px 14px!important;
-  font-size:12px!important;
-  font-weight:750!important;
+  border-radius:10px!important;
+  padding:11px 18px!important;
+  font-size:13px!important;
+  font-weight:700!important;
   box-shadow:none!important;
 }
-html body .pills button:hover{
-  background:var(--ui-accent-soft)!important;
-  color:#93c5fd!important;
+html body .pills button:nth-child(2){
+  background:var(--ui-accent)!important;
+  color:#fff!important;
+  border-color:var(--ui-accent)!important;
 }
-html body.tema-claro .pills button:hover{color:#1d4ed8!important}
 
-/* filtros */
 html body .filtros-agenda{
   display:grid!important;
-  grid-template-columns:1.6fr 1fr 1fr!important;
-  gap:10px!important;
-  margin:0 0 22px!important;
-  padding:12px!important;
+  grid-template-columns:1.35fr 1fr 1fr!important;
+  gap:12px!important;
+  margin:0 0 34px!important;
+  padding:14px!important;
   background:var(--ui-surface)!important;
   border:1px solid var(--ui-line)!important;
   border-radius:16px!important;
-  box-shadow:0 5px 16px rgba(0,0,0,.08)!important;
+  box-shadow:var(--ui-shadow)!important;
 }
 html body .filtros-agenda input,
 html body .filtros-agenda select{
-  height:44px!important;
+  height:46px!important;
   margin:0!important;
+  padding:0 14px!important;
   background:var(--ui-surface-2)!important;
   color:var(--ui-text)!important;
   border:1px solid var(--ui-line)!important;
@@ -204,62 +254,56 @@ html body .filtros-agenda select{
   box-shadow:none!important;
 }
 html body #tituloAgenda h3{
-  margin:7px 0 13px!important;
-  color:var(--ui-muted)!important;
-  font-size:14px!important;
-  font-weight:700!important;
+  margin:0 0 14px!important;
+  color:var(--ui-text)!important;
+  font-size:19px!important;
+  font-weight:800!important;
 }
 html body #tituloAgenda h3 span{color:var(--ui-accent)!important}
 
-/* cards principais */
 html body #listaAgenda>.card,
 html body #listaHistorico>.card{
   position:relative!important;
   background:var(--ui-surface)!important;
   color:var(--ui-text)!important;
   border:1px solid var(--ui-line)!important;
-  border-radius:20px!important;
+  border-radius:16px!important;
   padding:18px 20px!important;
   margin-bottom:12px!important;
-  box-shadow:0 7px 20px rgba(0,0,0,.10)!important;
-  transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease!important;
+  box-shadow:var(--ui-shadow)!important;
+  overflow:hidden!important;
 }
 html body #listaAgenda>.card::before,
 html body #listaHistorico>.card::before{
   content:"";
-  position:absolute;
-  left:0;
-  top:18px;
-  bottom:18px;
-  width:4px;
-  border-radius:0 5px 5px 0;
-  background:var(--ui-accent);
-}
-html body #listaAgenda>.card:hover,
-html body #listaHistorico>.card:hover{
-  transform:translateY(-2px)!important;
-  box-shadow:0 13px 30px rgba(0,0,0,.16)!important;
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  bottom:0!important;
+  width:4px!important;
+  background:var(--ui-accent)!important;
 }
 html body .jogo-resumo{
-  min-height:78px!important;
-  gap:20px!important;
-  padding-left:3px!important;
+  min-height:88px!important;
+  grid-template-columns:120px 1fr 46px!important;
+  gap:22px!important;
+  align-items:center!important;
 }
 html body .jogo-datahora{
-  min-width:98px!important;
-  padding-right:18px!important;
+  min-width:0!important;
+  padding-right:20px!important;
   border-right:1px solid var(--ui-line)!important;
 }
 html body .hora{
   color:var(--ui-accent)!important;
-  font-size:23px!important;
+  font-size:24px!important;
   font-weight:900!important;
 }
 html body .data{
-  margin-top:5px!important;
+  margin-top:6px!important;
   color:var(--ui-muted)!important;
   font-size:11px!important;
-  font-weight:750!important;
+  font-weight:700!important;
 }
 html body .jogo-confronto{
   color:var(--ui-text)!important;
@@ -271,23 +315,31 @@ html body .jogo-seta{
   height:36px!important;
   display:grid!important;
   place-items:center!important;
-  border-radius:50%!important;
-  background:var(--ui-surface-2)!important;
-  color:var(--ui-muted)!important;
+  border-radius:11px!important;
+  background:var(--ui-accent-soft)!important;
+  color:var(--ui-accent)!important;
 }
 html body .jogo-detalhes{
   margin-top:16px!important;
   padding-top:17px!important;
   border-top:1px solid var(--ui-line)!important;
 }
+html body .badge{
+  background:var(--ui-accent-soft)!important;
+  color:var(--ui-accent)!important;
+  border:0!important;
+  border-radius:999px!important;
+  padding:5px 10px!important;
+  font-size:10px!important;
+  font-weight:800!important;
+}
 
-/* componentes */
 html body .card{
   background:var(--ui-surface)!important;
   color:var(--ui-text)!important;
-  border-color:var(--ui-line)!important;
-  border-radius:17px!important;
-  box-shadow:0 5px 15px rgba(0,0,0,.08)!important;
+  border:1px solid var(--ui-line)!important;
+  border-radius:15px!important;
+  box-shadow:0 5px 16px rgba(0,0,0,.07)!important;
 }
 html body input,
 html body textarea,
@@ -295,71 +347,107 @@ html body select{
   background:var(--ui-surface-2)!important;
   color:var(--ui-text)!important;
   border:1px solid var(--ui-line)!important;
-  border-radius:11px!important;
-  box-shadow:none!important;
+  border-radius:10px!important;
 }
-html body input:focus,
-html body textarea:focus,
-html body select:focus{
-  border-color:var(--ui-accent)!important;
-  box-shadow:0 0 0 3px rgba(59,130,246,.12)!important;
-}
-html body label{color:var(--ui-muted)!important;font-weight:700!important}
-html body .badge{
-  background:var(--ui-accent-soft)!important;
-  color:#93c5fd!important;
-  border:1px solid rgba(96,165,250,.25)!important;
-  border-radius:999px!important;
-  padding:5px 9px!important;
-  font-size:10px!important;
-}
-html body.tema-claro .badge{color:#2563eb!important;border-color:#d9e6ff!important}
+html body label{color:var(--ui-muted)!important}
 html body .vazio{
-  padding:48px 20px!important;
+  padding:46px 20px!important;
   background:var(--ui-surface)!important;
-  border:1px dashed var(--ui-line)!important;
-  border-radius:18px!important;
   color:var(--ui-muted)!important;
+  border:1px dashed var(--ui-line)!important;
+  border-radius:16px!important;
 }
 
-/* mobile */
-@media(max-width:760px){
+/* ===== MOBILE: mantém navegação superior, sem mudar funções ===== */
+@media(max-width:900px){
   html body header{
-    margin:10px 10px 8px!important;
-    padding:15px 12px 15px 63px!important;
+    position:static!important;
+    width:auto!important;
+    height:auto!important;
+    margin:10px!important;
+    padding:15px 14px 15px 63px!important;
+    text-align:left!important;
+    background:var(--ui-surface)!important;
+    border:1px solid var(--ui-line)!important;
     border-radius:16px!important;
+    box-shadow:var(--ui-shadow)!important;
   }
   html body header::before{
-    transform:translate(-48px,0);
-    width:38px;
-    height:38px;
-    border-radius:11px;
+    content:"✓"!important;
+    position:absolute!important;
+    left:25px!important;
+    top:25px!important;
+    transform:none!important;
+    width:34px!important;
+    height:34px!important;
+    display:grid!important;
+    place-items:center!important;
+    border:2px solid var(--ui-accent)!important;
+    border-radius:8px!important;
+    color:var(--ui-accent)!important;
+    background:transparent!important;
   }
-  html body header h1 #tituloNome{font-size:19px!important}
+  html body header h1{font-size:0!important;margin:0!important}
+  html body header h1 #tituloNome{font-size:19px!important;color:var(--ui-text)!important}
+  html body header small{color:var(--ui-muted)!important;font-size:11px!important}
+
   html body nav{
+    position:static!important;
+    width:auto!important;
     margin:0 10px!important;
-    overflow-x:auto!important;
+    padding:6px!important;
+    display:flex!important;
+    flex-direction:row!important;
     justify-content:flex-start!important;
+    gap:4px!important;
+    overflow-x:auto!important;
+    background:var(--ui-surface)!important;
+    border:1px solid var(--ui-line)!important;
+    border-radius:14px!important;
   }
   html body nav button{
     flex:0 0 auto!important;
-    padding:9px 11px!important;
+    width:auto!important;
+    padding:9px 12px!important;
+    background:transparent!important;
+    color:var(--ui-text)!important;
+    border:0!important;
+    border-radius:9px!important;
     font-size:12px!important;
   }
-  html body .conta-barra{margin:4px 10px 0!important;padding:4px 2px!important}
-  html body .container{padding:16px 10px 36px!important}
+  html body nav button:first-child{background:var(--ui-accent)!important;color:#fff!important}
+  html body nav button::before{content:none!important}
+
+  html body .conta-barra{
+    position:static!important;
+    width:auto!important;
+    height:auto!important;
+    margin:5px 10px 0!important;
+    padding:4px 2px!important;
+    flex-direction:row!important;
+    justify-content:flex-end!important;
+    align-items:center!important;
+    background:transparent!important;
+    border:0!important;
+  }
+  html body .conta-barra::before{content:none!important}
+  html body .conta-barra button{position:static!important}
+
+  html body .container{
+    margin:0!important;
+    padding:18px 10px 36px!important;
+  }
   html body section>h2{font-size:25px!important}
-  html body #agenda>h2::after{display:none!important}
-  html body .pills{flex-wrap:nowrap!important;overflow-x:auto!important;padding-bottom:3px!important}
-  html body .pills button{flex:0 0 auto!important}
-  html body .filtros-agenda{grid-template-columns:1fr!important;padding:10px!important}
+  html body #agenda>h2::after{font-size:12px!important}
+  html body .pills{flex-wrap:nowrap!important;overflow-x:auto!important}
+  html body .pills button{flex:0 0 auto!important;padding:9px 13px!important}
+  html body .filtros-agenda{grid-template-columns:1fr!important;padding:10px!important;margin-bottom:22px!important}
   html body .jogo-resumo{grid-template-columns:1fr auto!important;gap:10px!important}
   html body .jogo-datahora{
     grid-column:1/2!important;
     display:flex!important;
-    align-items:baseline!important;
     gap:8px!important;
-    min-width:0!important;
+    align-items:baseline!important;
     border-right:0!important;
     border-bottom:1px solid var(--ui-line)!important;
     padding:0 0 9px!important;
