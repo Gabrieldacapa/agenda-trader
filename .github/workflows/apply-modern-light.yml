@@ -2,7 +2,9 @@ name: Apply modern light theme
 on:
   push:
     branches: [design/light-modern-cards]
-    paths: [modern-light.css]
+    paths:
+      - modern-light.css
+      - .github/workflows/apply-modern-light.yml
 permissions:
   contents: write
 jobs:
