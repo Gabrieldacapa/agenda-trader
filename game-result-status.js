@@ -44,12 +44,16 @@
     const summary=card.querySelector('.jogo-resumo');
     if(!summary)return;
 
+    const signature=`${game.registrado?'1':'0'}|${game.resultadoRegistro||''}`;
     let wrap=card.querySelector(':scope > .game-status-inline-wrap');
     if(!wrap){
       wrap=document.createElement('div');
       wrap.className='game-status-inline-wrap';
       summary.insertAdjacentElement('afterend',wrap);
     }
+
+    if(wrap.dataset.signature===signature)return;
+    wrap.dataset.signature=signature;
     wrap.innerHTML=controlsHtml(game,id);
   }
 
@@ -57,9 +61,9 @@
 
   const style=document.createElement('style');
   style.textContent=`
-    .game-status-inline-wrap{display:block;margin:10px 0 0 142px;position:relative;z-index:5}
-    .game-status-inline{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-    .game-status-inline button{pointer-events:auto!important;position:relative!important;z-index:6!important;border:1px solid #d8e0ea!important;border-radius:999px!important;padding:7px 11px!important;font-size:11px!important;font-weight:800!important;line-height:1!important;cursor:pointer!important;box-shadow:none!important}
+    .game-status-inline-wrap{display:block;margin:10px 0 0 142px;position:relative;z-index:20}
+    .game-status-inline{display:flex;align-items:center;gap:7px;flex-wrap:wrap;position:relative;z-index:21}
+    .game-status-inline button{pointer-events:auto!important;position:relative!important;z-index:22!important;border:1px solid #d8e0ea!important;border-radius:999px!important;padding:7px 11px!important;font-size:11px!important;font-weight:800!important;line-height:1!important;cursor:pointer!important;box-shadow:none!important}
     .game-status-toggle{background:#eef2f7!important;color:#64748b!important}
     .game-status-toggle.is-on{background:#e0f2fe!important;color:#0369a1!important;border-color:#bae6fd!important}
     .game-result-green{background:#f0fdf4!important;color:#166534!important;border-color:#bbf7d0!important}
@@ -79,9 +83,11 @@
 
   let queued=false;
   const observer=new MutationObserver(()=>{
-    if(queued)return; queued=true;
+    if(queued)return;
+    queued=true;
     requestAnimationFrame(()=>{queued=false;decorateAll()});
   });
+
   function boot(){decorateAll();observer.observe(document.body,{childList:true,subtree:true})}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
