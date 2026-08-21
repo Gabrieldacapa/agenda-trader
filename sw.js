@@ -1,9 +1,10 @@
-const CACHE_NAME = "agenda-trader-v37";
+const CACHE_NAME = "agenda-trader-v38";
 const APP_SHELL = [
   "./manifest.webmanifest",
   "./icon-192.png",
   "./icon-512.png",
-  "./club-badges.js"
+  "./club-badges.js",
+  "./game-result-status.js"
 ];
 
 self.addEventListener("install", event => {
@@ -12,9 +13,7 @@ self.addEventListener("install", event => {
 });
 
 self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))
-  );
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))));
   self.clients.claim();
 });
 
@@ -29,7 +28,7 @@ self.addEventListener("fetch", event => {
         if (!response.ok) return response;
         let html = await response.text();
         html = html.replace(/<link\s+rel="stylesheet"\s+href="\.\/modern-ui\.css(?:\?[^\"]*)?">/i, "");
-        html = html.replace("</head>", '<link rel="stylesheet" href="./modern-ui.css?v=37"><script defer src="./club-badges.js?v=37"></script></head>');
+        html = html.replace("</head>", '<link rel="stylesheet" href="./modern-ui.css?v=38"><script defer src="./club-badges.js?v=38"></script><script defer src="./game-result-status.js?v=38"></script></head>');
         const headers = new Headers(response.headers);
         headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
         return new Response(html, {status:response.status,statusText:response.statusText,headers});
@@ -38,7 +37,7 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  if (url.pathname.endsWith("/modern-ui.css") || url.pathname.endsWith("/club-badges.js")) {
+  if (url.pathname.endsWith("/modern-ui.css") || url.pathname.endsWith("/club-badges.js") || url.pathname.endsWith("/game-result-status.js")) {
     event.respondWith(fetch(event.request, {cache:"no-store"}));
     return;
   }
