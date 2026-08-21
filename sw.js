@@ -1,7 +1,8 @@
-const CACHE_NAME = "agenda-trader-v30";
+const CACHE_NAME = "agenda-trader-v31";
 const APP_SHELL = [
   "./",
   "./index.html",
+  "./v31-account-isolation.js",
   "./manifest.webmanifest",
   "./icon-192.png",
   "./icon-512.png"
