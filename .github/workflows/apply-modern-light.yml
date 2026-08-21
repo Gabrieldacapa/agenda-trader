@@ -1,0 +1,35 @@
+name: Apply modern light theme
+on:
+  push:
+    branches: [design/light-modern-cards]
+    paths: [modern-light.css]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: design/light-modern-cards
+      - name: Link stylesheet and use light theme as default
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          marker='<link rel="manifest" href="./manifest.webmanifest">'
+          link='<link rel="stylesheet" href="./modern-light.css">\n\n'+marker
+          if './modern-light.css' not in s:
+              assert marker in s
+              s=s.replace(marker,link,1)
+          s=s.replace('const tema=cfg.tema||"escuro";','const tema=cfg.tema||"claro";',1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "design: enable clean light theme"
+          git push origin design/light-modern-cards
