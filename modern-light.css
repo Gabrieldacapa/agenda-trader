@@ -1,0 +1,172 @@
+/* Visual moderno e claro — somente apresentação, sem alterar lógica ou dados */
+body.tema-claro{
+  background:#f5f7fb!important;
+  color:#172033!important;
+}
+body.tema-claro header{
+  background:rgba(255,255,255,.96)!important;
+  border-bottom:1px solid #e5eaf1!important;
+  box-shadow:0 2px 12px rgba(15,23,42,.05)!important;
+}
+body.tema-claro header h1{font-size:25px!important;color:#172033!important}
+body.tema-claro header small{color:#718096!important}
+body.tema-claro nav{
+  background:#fff!important;
+  border-bottom:1px solid #e5eaf1!important;
+  box-shadow:0 3px 14px rgba(15,23,42,.04)!important;
+}
+body.tema-claro nav button{
+  background:transparent!important;
+  color:#4a5568!important;
+  border:0!important;
+  border-radius:10px!important;
+  padding:10px 15px!important;
+}
+body.tema-claro nav button:hover{background:#eef4ff!important;color:#2563eb!important}
+body.tema-claro .conta-barra{
+  background:#fff!important;
+  border-bottom:1px solid #e7ebf0!important;
+  color:#64748b!important;
+}
+body.tema-claro .container{max-width:1100px!important;padding:22px 18px 40px!important}
+body.tema-claro section>h2{
+  font-size:24px!important;
+  letter-spacing:-.3px!important;
+  margin:6px 0 18px!important;
+}
+body.tema-claro .card{
+  background:#fff!important;
+  border:1px solid #e6eaf0!important;
+  border-radius:16px!important;
+  box-shadow:0 5px 18px rgba(15,23,42,.055)!important;
+  padding:18px!important;
+  margin-bottom:14px!important;
+}
+body.tema-claro .card:hover{border-color:#d7deea!important}
+body.tema-claro .jogo-resumo{
+  min-height:72px!important;
+  padding:2px!important;
+}
+body.tema-claro .hora{
+  color:#2563eb!important;
+  font-size:22px!important;
+}
+body.tema-claro .data{color:#64748b!important;font-size:12px!important}
+body.tema-claro .jogo-confronto{
+  color:#172033!important;
+  font-size:18px!important;
+  letter-spacing:-.15px!important;
+}
+body.tema-claro .jogo-seta{
+  width:34px!important;
+  height:34px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border-radius:50%!important;
+  background:#f1f5f9!important;
+  color:#64748b!important;
+}
+body.tema-claro .jogo-detalhes{
+  border-top:1px solid #edf0f4!important;
+  margin-top:14px!important;
+  padding-top:16px!important;
+}
+body.tema-claro .pills{
+  gap:7px!important;
+  margin-bottom:18px!important;
+}
+body.tema-claro .pills button{
+  background:#fff!important;
+  color:#526070!important;
+  border:1px solid #dfe5ec!important;
+  border-radius:999px!important;
+  padding:8px 14px!important;
+  font-weight:700!important;
+}
+body.tema-claro .pills button:hover{background:#eef4ff!important;color:#2563eb!important;border-color:#c8d7f5!important}
+body.tema-claro .filtros-agenda{
+  background:#fff!important;
+  border:1px solid #e6eaf0!important;
+  border-radius:15px!important;
+  padding:12px!important;
+  gap:10px!important;
+  box-shadow:0 4px 14px rgba(15,23,42,.04)!important;
+}
+body.tema-claro input,
+body.tema-claro textarea,
+body.tema-claro select{
+  background:#fbfcfe!important;
+  color:#172033!important;
+  border:1px solid #dce2ea!important;
+  border-radius:10px!important;
+  box-shadow:none!important;
+}
+body.tema-claro input:focus,
+body.tema-claro textarea:focus,
+body.tema-claro select:focus{
+  border-color:#7aa7f8!important;
+  box-shadow:0 0 0 3px rgba(37,99,235,.08)!important;
+}
+body.tema-claro label{color:#4b5563!important;font-weight:700!important}
+body.tema-claro .badge{
+  background:#eef4ff!important;
+  color:#2563eb!important;
+  border:1px solid #d8e5ff!important;
+  font-size:11px!important;
+  padding:5px 9px!important;
+}
+body.tema-claro .prioridade{font-size:11px!important;padding:5px 9px!important}
+body.tema-claro .prio-alta{background:#fff1f2!important;color:#be123c!important}
+body.tema-claro .prio-observar{background:#eff6ff!important;color:#1d4ed8!important}
+body.tema-claro .prio-live{background:#fff7ed!important;color:#c2410c!important}
+body.tema-claro .prio-descartado{background:#f3f4f6!important;color:#6b7280!important}
+body.tema-claro .box{
+  border-radius:12px!important;
+  border:1px solid #e8ecf1!important;
+  background:#fafbfc!important;
+}
+body.tema-claro .estudo{background:#f0fdf4!important;border-left:4px solid #22c55e!important;color:#24543a!important}
+body.tema-claro .observar{background:#eff6ff!important;border-left:4px solid #3b82f6!important;color:#1e4976!important}
+body.tema-claro .alerta{background:#fffbeb!important;border-left:4px solid #f59e0b!important;color:#72510d!important}
+body.tema-claro .stats{background:#faf5ff!important;border-left:4px solid #8b5cf6!important;color:#553c7b!important}
+body.tema-claro .ponto-principal{background:#f0f9ff!important;color:#155e75!important;border-left:4px solid #38bdf8!important}
+body.tema-claro .btn-main,
+body.tema-claro .btn-blue,
+body.tema-claro .btn-edit,
+body.tema-claro .btn-del,
+body.tema-claro .btn-gray{
+  border-radius:9px!important;
+  box-shadow:none!important;
+}
+body.tema-claro .btn-main{background:#2563eb!important;color:#fff!important}
+body.tema-claro .btn-blue{background:#eaf2ff!important;color:#1d4ed8!important}
+body.tema-claro .btn-edit{background:#fff7ed!important;color:#c2410c!important}
+body.tema-claro .btn-del{background:#fff1f2!important;color:#be123c!important}
+body.tema-claro .btn-gray{background:#f1f5f9!important;color:#475569!important}
+body.tema-claro .vazio{
+  background:#fff!important;
+  border:1px dashed #d9e0e8!important;
+  border-radius:14px!important;
+}
+body.tema-claro .grupo-titulo{
+  box-shadow:none!important;
+  border-radius:12px!important;
+}
+body.tema-claro .bloco-estatistica{
+  background:#fff!important;
+  border:1px solid #e6eaf0!important;
+  box-shadow:0 4px 14px rgba(15,23,42,.035)!important;
+}
+@media(max-width:760px){
+  body.tema-claro header{padding:16px 12px!important}
+  body.tema-claro header h1{font-size:21px!important}
+  body.tema-claro nav{top:70px!important;padding:8px!important}
+  body.tema-claro nav button{padding:9px 11px!important;font-size:13px!important}
+  body.tema-claro .container{padding:14px 10px 30px!important}
+  body.tema-claro .card{padding:14px!important;border-radius:14px!important}
+  body.tema-claro .jogo-datahora{min-width:0!important}
+  body.tema-claro .hora{font-size:20px!important}
+  body.tema-claro .jogo-confronto{font-size:16px!important}
+  body.tema-claro .filtros-agenda{padding:10px!important}
+}
