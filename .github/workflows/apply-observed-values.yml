@@ -1,0 +1,50 @@
+name: Apply observed/reference fields
+on:
+  push:
+    branches: [feat/observed-reference-values]
+    paths: [.github/workflows/apply-observed-values.yml]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/observed-reference-values
+      - name: Apply minimal patch
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+
+          old='''    <div class="grid">\n      <div>\n        <label>Prioridade do jogo</label>'''
+          new='''    <div class="grid">\n      <div><label>Valor observado</label><input type="number" step="0.01" min="0" id="valorObservado" placeholder="Ex: 1.80"></div>\n      <div><label>Valor de referência</label><input type="number" step="0.01" min="0" id="valorReferencia" placeholder="Ex: 2.00"></div>\n    </div>\n    <div class="grid">\n      <div>\n        <label>Prioridade do jogo</label>'''
+          assert old in s, 'form insertion point not found'
+          s=s.replace(old,new,1)
+
+          old='''    pontoPrincipal:val("pontoPrincipal"),\n    estrategias:estrategiaIds'''
+          new='''    pontoPrincipal:val("pontoPrincipal"),\n    valorObservado:numeroOuVazio("valorObservado"),valorReferencia:numeroOuVazio("valorReferencia"),\n    estrategias:estrategiaIds'''
+          assert old in s, 'save insertion point not found'
+          s=s.replace(old,new,1)
+
+          old='''  prioridade.value=j.prioridade||"observar";pontoPrincipal.value=j.pontoPrincipal||"";\n  anotacoes.value=j.anotacoes||""'''
+          new='''  prioridade.value=j.prioridade||"observar";pontoPrincipal.value=j.pontoPrincipal||"";\n  valorObservado.value=j.valorObservado??"";valorReferencia.value=j.valorReferencia??"";\n  anotacoes.value=j.anotacoes||""'''
+          assert old in s, 'edit insertion point not found'
+          s=s.replace(old,new,1)
+
+          old='''["jogoId","mandante","visitante","campeonato","data","horario","pontoPrincipal","anotacoes"'''
+          new='''["jogoId","mandante","visitante","campeonato","data","horario","pontoPrincipal","valorObservado","valorReferencia","anotacoes"'''
+          assert old in s, 'clear insertion point not found'
+          s=s.replace(old,new,1)
+
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "feat: add observed and reference values to game form"
+          git push
