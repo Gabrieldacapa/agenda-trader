@@ -2146,6 +2146,11 @@ function checarAlertas(){
 
 function carregarConfiguracoes(){
   const cfg=JSON.parse(localStorage.getItem("agendaTraderConfig")||"{}");
+  if(!cfg.visualClaroV2){
+    cfg.tema="claro";
+    cfg.visualClaroV2=true;
+    localStorage.setItem("agendaTraderConfig",JSON.stringify(cfg));
+  }
   const tema=cfg.tema||"claro";
   document.body.classList.toggle("tema-claro",tema==="claro");
   if(document.getElementById("temaConfig"))temaConfig.value=tema;
@@ -2156,9 +2161,10 @@ function carregarConfiguracoes(){
 function salvarConfiguracoes(){
   const atual=JSON.parse(localStorage.getItem("agendaTraderConfig")||"{}");
   const cfg={
-    tema:document.getElementById("temaConfig")?.value||atual.tema||"escuro",
+    tema:document.getElementById("temaConfig")?.value||atual.tema||"claro",
     nomeAgenda:document.getElementById("nomeAgendaConfig")?.value.trim()||atual.nomeAgenda||"Agenda Trader",
-    nomeUsuario:document.getElementById("nomeUsuarioConfig")?.value.trim()||""
+    nomeUsuario:document.getElementById("nomeUsuarioConfig")?.value.trim()||"",
+    visualClaroV2:true
   };
   localStorage.setItem("agendaTraderConfig",JSON.stringify(cfg));
   carregarConfiguracoes();
