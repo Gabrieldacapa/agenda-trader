@@ -1,8 +1,9 @@
-const CACHE_NAME = "agenda-trader-v35";
+const CACHE_NAME = "agenda-trader-v36";
 const APP_SHELL = [
   "./manifest.webmanifest",
   "./icon-192.png",
-  "./icon-512.png"
+  "./icon-512.png",
+  "./club-badges.js"
 ];
 
 self.addEventListener("install", event => {
@@ -28,7 +29,7 @@ self.addEventListener("fetch", event => {
         if (!response.ok) return response;
         let html = await response.text();
         html = html.replace(/<link\s+rel="stylesheet"\s+href="\.\/modern-ui\.css(?:\?[^\"]*)?">/i, "");
-        html = html.replace("</head>", '<link rel="stylesheet" href="./modern-ui.css?v=35"></head>');
+        html = html.replace("</head>", '<link rel="stylesheet" href="./modern-ui.css?v=36"><script defer src="./club-badges.js?v=36"></script></head>');
         const headers = new Headers(response.headers);
         headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
         return new Response(html, {status:response.status,statusText:response.statusText,headers});
@@ -37,12 +38,10 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  if (url.pathname.endsWith("/modern-ui.css")) {
+  if (url.pathname.endsWith("/modern-ui.css") || url.pathname.endsWith("/club-badges.js")) {
     event.respondWith(fetch(event.request, {cache:"no-store"}));
     return;
   }
 
-  event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
-  );
+  event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
 });
