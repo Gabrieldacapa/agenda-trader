@@ -512,6 +512,7 @@ body.tema-claro .auth-tabs button{background:#e2e8f0;color:#0f172a;border-color:
 <section id="agenda" class="ativa">
   <h2>Agenda</h2>
   <div class="pills">
+    <button onclick="mudarDias(-1)">Ontem</button>
     <button onclick="mudarDias(0)">Hoje</button>
     <button onclick="mudarDias(1)">Amanhã</button>
     <button onclick="mudarDias(2)">+2 dias</button>
@@ -1920,8 +1921,8 @@ function renderAgenda(){
     return true;
   }).sort((a,b)=>(a.horario||"").localeCompare(b.horario||""));
 
-  const nomes=["Hoje","Amanhã","Daqui a 2 dias","Daqui a 3 dias"];
-  tituloAgenda.innerHTML=`<h3>${nomes[diasAgenda]} — <span style="color:var(--blue)">${formatarData(alvo)}</span></h3>`;
+  const nomes={"-1":"Ontem","0":"Hoje","1":"Amanhã","2":"Daqui a 2 dias","3":"Daqui a 3 dias"};
+  tituloAgenda.innerHTML=`<h3>${nomes[String(diasAgenda)]||"Agenda"} — <span style="color:var(--blue)">${formatarData(alvo)}</span></h3>`;
   listaAgenda.innerHTML=arr.length?arr.map(criarCardJogo).join(""):'<div class="vazio">Nenhum jogo encontrado nesta data.</div>';
 }
 function renderHistorico(){
