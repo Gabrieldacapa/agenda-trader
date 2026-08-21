@@ -1,0 +1,337 @@
+/* Novo visual da Agenda — apenas apresentação */
+body.tema-claro{
+  background:#f3f6fb!important;
+  color:#182235!important;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif!important;
+}
+body.tema-claro header{
+  position:static!important;
+  max-width:1120px!important;
+  margin:22px auto 8px!important;
+  padding:18px 20px 18px 78px!important;
+  text-align:left!important;
+  background:#fff!important;
+  border:1px solid #e6ebf2!important;
+  border-radius:18px!important;
+  box-shadow:0 10px 28px rgba(15,23,42,.055)!important;
+}
+body.tema-claro header::before{
+  content:"AT";
+  position:absolute;
+  margin-left:-58px;
+  margin-top:-4px;
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:#2563eb;
+  color:#fff;
+  font-size:14px;
+  font-weight:900;
+  box-shadow:0 8px 18px rgba(37,99,235,.22);
+}
+body.tema-claro header h1{
+  margin:0!important;
+  font-size:22px!important;
+  line-height:1.15!important;
+  color:#111827!important;
+  letter-spacing:-.35px!important;
+}
+body.tema-claro header small{
+  display:block!important;
+  margin-top:5px!important;
+  color:#8a98aa!important;
+  font-size:12px!important;
+}
+body.tema-claro nav{
+  position:static!important;
+  top:auto!important;
+  max-width:1120px!important;
+  margin:0 auto!important;
+  padding:6px!important;
+  justify-content:flex-start!important;
+  gap:4px!important;
+  background:#fff!important;
+  border:1px solid #e6ebf2!important;
+  border-radius:15px!important;
+  box-shadow:0 6px 18px rgba(15,23,42,.04)!important;
+}
+body.tema-claro nav button{
+  background:transparent!important;
+  color:#64748b!important;
+  border:0!important;
+  border-radius:10px!important;
+  padding:10px 15px!important;
+  font-size:13px!important;
+  font-weight:750!important;
+}
+body.tema-claro nav button:first-child{
+  background:#2563eb!important;
+  color:#fff!important;
+  box-shadow:0 4px 11px rgba(37,99,235,.18)!important;
+}
+body.tema-claro nav button:hover{
+  background:#eef4ff!important;
+  color:#1d4ed8!important;
+}
+body.tema-claro nav button:first-child:hover{
+  background:#1d4ed8!important;
+  color:#fff!important;
+}
+body.tema-claro .conta-barra{
+  max-width:1120px!important;
+  margin:7px auto 0!important;
+  padding:7px 12px!important;
+  background:transparent!important;
+  border:0!important;
+  color:#8a98aa!important;
+  font-size:11px!important;
+}
+body.tema-claro .conta-barra button{
+  background:#eaf0f7!important;
+  color:#475569!important;
+  border-radius:9px!important;
+  padding:7px 10px!important;
+}
+body.tema-claro .container{
+  max-width:1120px!important;
+  padding:20px 0 48px!important;
+}
+body.tema-claro section>h2{
+  font-size:29px!important;
+  margin:4px 0 18px!important;
+  color:#0f172a!important;
+  letter-spacing:-.7px!important;
+}
+body.tema-claro #agenda>h2::before{
+  content:"VISÃO DO DIA";
+  display:block;
+  margin-bottom:5px;
+  color:#2563eb;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:1.4px;
+}
+body.tema-claro #agenda>h2::after{
+  content:"Organize seus jogos e abra cada card para consultar suas anotações.";
+  display:block;
+  margin-top:7px;
+  color:#7c8a9d;
+  font-size:13px;
+  font-weight:500;
+  letter-spacing:0;
+}
+body.tema-claro .pills{
+  gap:7px!important;
+  margin:0 0 15px!important;
+}
+body.tema-claro .pills button{
+  background:#fff!important;
+  color:#536273!important;
+  border:1px solid #dfe6ef!important;
+  border-radius:10px!important;
+  padding:8px 13px!important;
+  font-size:12px!important;
+  font-weight:750!important;
+  box-shadow:none!important;
+}
+body.tema-claro .pills button:hover{
+  background:#edf4ff!important;
+  border-color:#c9d9f8!important;
+  color:#1d4ed8!important;
+}
+body.tema-claro .filtros-agenda{
+  display:grid!important;
+  grid-template-columns:1.5fr 1fr 1fr!important;
+  gap:9px!important;
+  margin:0 0 22px!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+body.tema-claro .filtros-agenda input,
+body.tema-claro .filtros-agenda select{
+  height:44px!important;
+  margin:0!important;
+  background:#fff!important;
+  border:1px solid #e1e7ef!important;
+  border-radius:11px!important;
+  color:#263244!important;
+  box-shadow:0 3px 10px rgba(15,23,42,.025)!important;
+}
+body.tema-claro #tituloAgenda h3{
+  margin:6px 0 13px!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  color:#65758a!important;
+}
+body.tema-claro #tituloAgenda h3 span{
+  color:#2563eb!important;
+}
+body.tema-claro #listaAgenda>.card,
+body.tema-claro #listaHistorico>.card{
+  background:#fff!important;
+  border:1px solid #e4eaf1!important;
+  border-radius:18px!important;
+  padding:17px 18px!important;
+  margin-bottom:11px!important;
+  box-shadow:0 5px 15px rgba(15,23,42,.035)!important;
+  transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease!important;
+}
+body.tema-claro #listaAgenda>.card:hover,
+body.tema-claro #listaHistorico>.card:hover{
+  transform:translateY(-1px)!important;
+  border-color:#cfd9e6!important;
+  box-shadow:0 10px 24px rgba(15,23,42,.065)!important;
+}
+body.tema-claro .jogo-resumo{
+  min-height:76px!important;
+  gap:18px!important;
+}
+body.tema-claro .jogo-datahora{
+  min-width:90px!important;
+  padding-right:15px!important;
+  border-right:1px solid #edf0f4!important;
+}
+body.tema-claro .hora{
+  color:#2563eb!important;
+  font-size:22px!important;
+  font-weight:900!important;
+}
+body.tema-claro .data{
+  color:#8b98a9!important;
+  font-size:11px!important;
+  font-weight:750!important;
+}
+body.tema-claro .jogo-confronto{
+  color:#182235!important;
+  font-size:18px!important;
+  font-weight:850!important;
+  letter-spacing:-.2px!important;
+}
+body.tema-claro .jogo-seta{
+  width:34px!important;
+  height:34px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:50%!important;
+  background:#f0f4f8!important;
+  color:#718096!important;
+}
+body.tema-claro .jogo-detalhes{
+  margin-top:15px!important;
+  padding-top:16px!important;
+  border-top:1px solid #edf0f4!important;
+}
+body.tema-claro .badge{
+  background:#eef4ff!important;
+  color:#2563eb!important;
+  border:1px solid #dbe6ff!important;
+  padding:5px 9px!important;
+  font-size:10px!important;
+}
+body.tema-claro .prioridade{
+  font-size:10px!important;
+  padding:5px 9px!important;
+}
+body.tema-claro .box{
+  border-radius:12px!important;
+  border:1px solid #e7ecf2!important;
+  box-shadow:none!important;
+}
+body.tema-claro .estudo{background:#f0fdf4!important;color:#24543a!important}
+body.tema-claro .observar{background:#eff6ff!important;color:#1e4976!important}
+body.tema-claro .alerta{background:#fffbeb!important;color:#72510d!important}
+body.tema-claro .stats{background:#faf5ff!important;color:#553c7b!important}
+body.tema-claro .vazio{
+  padding:45px 20px!important;
+  background:#fff!important;
+  border:1px dashed #d5deea!important;
+  border-radius:17px!important;
+  color:#8b98a9!important;
+}
+body.tema-claro .card:not(#listaAgenda .card):not(#listaHistorico .card){
+  border-radius:16px!important;
+  border-color:#e3e9f0!important;
+  box-shadow:0 4px 14px rgba(15,23,42,.035)!important;
+}
+body.tema-claro input,
+body.tema-claro textarea,
+body.tema-claro select{
+  border-radius:10px!important;
+  border-color:#dce4ee!important;
+}
+body.tema-claro input:focus,
+body.tema-claro textarea:focus,
+body.tema-claro select:focus{
+  border-color:#7ea8f5!important;
+  box-shadow:0 0 0 3px rgba(37,99,235,.08)!important;
+}
+@media(max-width:760px){
+  body.tema-claro header{
+    margin:10px 10px 7px!important;
+    padding:15px 13px 15px 62px!important;
+    border-radius:15px!important;
+  }
+  body.tema-claro header::before{
+    margin-left:-49px;
+    margin-top:-1px;
+    width:38px;
+    height:38px;
+    border-radius:11px;
+  }
+  body.tema-claro header h1{font-size:19px!important}
+  body.tema-claro nav{
+    margin:0 10px!important;
+    overflow-x:auto!important;
+    justify-content:flex-start!important;
+  }
+  body.tema-claro nav button{
+    flex:0 0 auto!important;
+    padding:9px 11px!important;
+    font-size:12px!important;
+  }
+  body.tema-claro .conta-barra{
+    margin:4px 10px 0!important;
+    padding:5px 2px!important;
+  }
+  body.tema-claro .container{
+    padding:15px 10px 34px!important;
+  }
+  body.tema-claro section>h2{
+    font-size:24px!important;
+  }
+  body.tema-claro #agenda>h2::after{display:none}
+  body.tema-claro .pills{
+    flex-wrap:nowrap!important;
+    overflow-x:auto!important;
+    padding-bottom:3px!important;
+  }
+  body.tema-claro .pills button{flex:0 0 auto!important}
+  body.tema-claro .filtros-agenda{
+    grid-template-columns:1fr!important;
+  }
+  body.tema-claro .jogo-resumo{
+    grid-template-columns:1fr auto!important;
+    gap:10px!important;
+  }
+  body.tema-claro .jogo-datahora{
+    grid-column:1/2!important;
+    display:flex!important;
+    align-items:baseline!important;
+    gap:8px!important;
+    border-right:0!important;
+    border-bottom:1px solid #edf0f4!important;
+    padding:0 0 9px!important;
+  }
+  body.tema-claro .jogo-confronto{
+    grid-column:1/2!important;
+    font-size:16px!important;
+  }
+  body.tema-claro .jogo-seta{
+    grid-column:2!important;
+    grid-row:1/3!important;
+  }
+}
