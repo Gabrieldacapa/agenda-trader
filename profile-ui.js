@@ -1,5 +1,6 @@
 (() => {
   const CONFIG_KEY='agendaTraderConfig';
+  let lastSidebarSignature='';
 
   function getConfig(){
     try{return JSON.parse(localStorage.getItem(CONFIG_KEY)||'{}')||{}}catch(_){return{}}
@@ -31,7 +32,7 @@
     return `<div style="width:${size}px;height:${size}px;border-radius:50%;display:grid;place-items:center;background:var(--ui-accent-soft,#eaf2ff);color:var(--ui-accent,#2563eb);font-weight:900;font-size:${Math.max(12,Math.round(size*.32))}px">${initials()}</div>`;
   }
 
-  function renderSidebarPhoto(){
+  function renderSidebarPhoto(force=false){
     const bar=document.querySelector('.conta-barra');
     if(!bar)return;
     let box=bar.querySelector('.profile-photo-sidebar');
@@ -41,7 +42,12 @@
       box.style.cssText='display:flex;align-items:center;gap:10px;order:-1';
       bar.prepend(box);
     }
-    box.innerHTML=photoMarkup(42);
+    const cfg=getConfig();
+    const signature=(cfg.profilePhoto||'')+'|'+initials();
+    if(force||signature!==lastSidebarSignature){
+      box.innerHTML=photoMarkup(42);
+      lastSidebarSignature=signature;
+    }
   }
 
   function ensureSettingsCard(){
@@ -79,7 +85,10 @@
 
   function renderSettingsPhoto(){
     const preview=document.getElementById('profilePhotoPreview');
-    if(preview)preview.innerHTML=photoMarkup(82);
+    if(preview){
+      const html=photoMarkup(82);
+      if(preview.innerHTML!==html)preview.innerHTML=html;
+    }
   }
 
   function compressImage(file){
@@ -118,7 +127,7 @@
       const cfg=getConfig();
       cfg.profilePhoto=data;
       saveConfig(cfg);
-      renderSidebarPhoto();
+      renderSidebarPhoto(true);
       renderSettingsPhoto();
       if(status)status.textContent='✅ Foto salva e sincronizada.';
     }catch(e){
@@ -131,7 +140,7 @@
     const cfg=getConfig();
     delete cfg.profilePhoto;
     saveConfig(cfg);
-    renderSidebarPhoto();
+    renderSidebarPhoto(true);
     renderSettingsPhoto();
     const status=document.getElementById('profilePhotoStatus');
     if(status)status.textContent='Foto removida.';
@@ -148,7 +157,7 @@
         const after=getConfig();
         if(!after.profilePhoto){after.profilePhoto=photo;saveConfig(after);}
       }
-      renderSidebarPhoto();
+      renderSidebarPhoto(true);
       renderSettingsPhoto();
       return out;
     };
@@ -164,12 +173,9 @@
     renderSettingsPhoto();
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refresh);else refresh();
-
-  const observer=new MutationObserver(()=>{
-    if(document.getElementById('appPrincipal')?.style.display!=='none')refresh();
-  });
-  observer.observe(document.documentElement,{childList:true,subtree:true});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh,0));
+  else setTimeout(refresh,0);
 
   window.addEventListener('storage',e=>{if(e.key===CONFIG_KEY)refresh()});
+  window.addEventListener('focus',refresh);
 })();
