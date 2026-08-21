@@ -103,3 +103,4 @@ body.tema-claro .vazio{padding:42px 20px!important;background:#fff!important;bor
           git add -A
           git commit -m "design: rebuild main interface with modern clear layout"
           git push
+# trigger: 2026-08-21
