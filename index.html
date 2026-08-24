@@ -2120,9 +2120,33 @@ function beep(){
   }catch(e){}
 }
 async function pedirNotificacao(){
-  if(!("Notification" in window)){alert("Este navegador não suporta notificações.");return}
-  const p=await Notification.requestPermission();
-  alert(p==="granted"?"Notificações permitidas.":"Permissão de notificação não concedida.");
+  if(!window.isSecureContext){alert("As notificações precisam ser abertas pelo endereço HTTPS do aplicativo.");return}
+  if(!("Notification" in window)){alert("Este navegador ou modo instalado não oferece notificações do sistema.");return}
+  try{
+    const p=Notification.permission==="granted"?"granted":await Notification.requestPermission();
+    if(p==="granted"){
+      alert("Notificações permitidas. Faça um teste deixando o aplicativo aberto.");
+      try{
+        const reg=await navigator.serviceWorker?.getRegistration();
+        if(reg)await reg.showNotification("Agenda Trader",{body:"Notificações ativadas com sucesso.",tag:"agenda-trader-teste"});
+        else new Notification("Agenda Trader",{body:"Notificações ativadas com sucesso."});
+      }catch(_){}
+    }else if(p==="denied"){
+      alert("As notificações estão bloqueadas nas configurações do navegador/celular. Libere a permissão para a Agenda Trader e tente novamente.");
+    }else{
+      alert("Permissão de notificação não concedida.");
+    }
+  }catch(e){alert("Não foi possível ativar notificações neste dispositivo.");}
+}
+async function mostrarNotificacaoAgenda(body,tag){
+  try{
+    if("Notification" in window&&Notification.permission==="granted"){
+      const reg=await navigator.serviceWorker?.getRegistration();
+      if(reg){await reg.showNotification("Agenda Trader",{body,tag});return true}
+      new Notification("Agenda Trader",{body});return true
+    }
+  }catch(e){console.warn("Falha ao mostrar notificação:",e)}
+  return false
 }
 function checarAlertas(){
   const agora=new Date();
@@ -2131,13 +2155,10 @@ function checarAlertas(){
     const alvo=new Date(`${j.data}T${j.horario}:00`);
     const diff=(alvo-agora)/60000;
     const min=Number(j.alertaMinutos||5);
-    if(diff<=min&&diff>min-1&&!j.alertado){
+    if(diff<=min&&diff>-2&&!j.alertado){
       beep();
-      if("Notification" in window&&Notification.permission==="granted"){
-        new Notification("Agenda Trader",{body:`${j.mandante} x ${j.visitante} começa em ${min} minutos.`});
-      }else{
-        alert(`🔔 ${j.mandante} x ${j.visitante} começa em ${min} minutos.`);
-      }
+      const body=`${j.mandante} x ${j.visitante} começa em ${min} minutos.`;
+      mostrarNotificacaoAgenda(body,"jogo-"+j.id).then(ok=>{if(!ok&&document.visibilityState==="visible")alert("🔔 "+body)});
       j.alertado=true;salvarDados();
     }
     if(diff>min+2&&j.alertado){j.alertado=false;salvarDados()}
